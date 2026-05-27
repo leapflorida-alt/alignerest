@@ -145,7 +145,7 @@ async function runAI(arch){
     const parsed=await resp.json();
     if(!resp.ok)throw new Error(parsed.error||'Detection failed');
     const td=arch==='upper'?UPPER_TEETH:LOWER_TEETH;
-    as.ppm=parsed.ppm?(parsed.ppm*CANVAS_W/1000):6;
+    as.ppm=parsed.ppm?Math.min(Math.max(parsed.ppm,4),20):8;
     as.placements=[];
     for(const t of parsed.teeth){
       if(!t.visible)continue;
