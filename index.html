@@ -6,33 +6,27 @@
 <title>AlignerEst™ — SML Chairside Aligner Tool</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:#0d1117;font-family:'DM Sans',system-ui,sans-serif;overscroll-behavior:none;color:#e2e8f0}
+html,body{height:100%;background:#0d1117;font-family:system-ui,sans-serif;overscroll-behavior:none;color:#e2e8f0}
 input,select,button{font-family:inherit}
 button{cursor:pointer;border:none;background:none}
-:root{
-  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
-  --primary:#2ea043;--primary-dim:#1a5f2a;--accent:#58a6ff;--accent-dim:#1f3a6e;
-  --warn:#d29922;--danger:#f85149;--muted:#8b949e;
-  --tooth-sel:rgba(88,166,255,0.85);--tooth-done:rgba(46,160,67,0.85);
-  --tooth-neutral:rgba(33,38,45,0.88);
-}
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--primary:#2ea043;--primary-dim:#1a5f2a;--accent:#58a6ff;--accent-dim:#1f3a6e;--warn:#d29922;--danger:#f85149;--muted:#8b949e}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
-.inp{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font-size:14px;color:#e2e8f0;background:var(--surface2);outline:none;transition:border-color .15s}
+.inp{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font-size:14px;color:#e2e8f0;background:var(--surface2);outline:none}
 .inp:focus{border-color:var(--accent)}
-.prim{background:var(--primary);color:#fff;border-radius:10px;padding:13px;font-size:15px;font-weight:700;width:100%;cursor:pointer;border:none;display:block;text-align:center;letter-spacing:.01em;transition:opacity .15s}
-.prim:disabled{opacity:.4;cursor:default}
+.prim{background:var(--primary);color:#fff;border-radius:10px;padding:13px;font-size:15px;font-weight:700;width:100%;cursor:pointer;border:none;display:block;text-align:center;transition:opacity .15s}
+.prim:disabled{opacity:.4}
 .prim:hover:not(:disabled){opacity:.88}
 .sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:block}
-input[type=range]{accent-color:var(--accent);width:100%;cursor:pointer}
+input[type=range]{accent-color:var(--accent);width:100%}
 #app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);padding-bottom:90px}
 #header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px 0;position:sticky;top:0;z-index:20}
 #header-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 #logo{width:38px;height:38px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-#title-block h1{font-size:17px;font-weight:800;color:#e2e8f0;letter-spacing:-.02em}
-#title-block p{font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+#title-block h1{font-size:17px;font-weight:800;color:#e2e8f0}
+#title-block p{font-size:9px;color:var(--muted);text-transform:uppercase}
 #pat-badge{font-size:12px;color:var(--accent);font-weight:600;margin-left:auto}
 #tabs{display:grid;grid-template-columns:repeat(5,1fr)}
-.tab-btn{padding:8px 2px 10px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:10px;font-weight:500;cursor:pointer;transition:color .15s,border-color .15s}
+.tab-btn{padding:8px 2px 10px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:10px;font-weight:500;cursor:pointer}
 .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
 .tab-icon{font-size:15px;display:block;margin-bottom:2px}
 #content{padding:14px 14px 0}
@@ -46,15 +40,13 @@ input[type=range]{accent-color:var(--accent);width:100%;cursor:pointer}
 @keyframes spin{to{transform:rotate(360deg)}}
 .edit-panel{padding:12px;border-top:1px solid var(--border)}
 .tooth-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-.tooth-chip{padding:5px 9px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:all .1s}
-.tooth-chip.placed{border-color:#2ea04366;color:var(--primary)}
+.tooth-chip{padding:5px 9px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted)}
 .tooth-chip.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
 .tooth-chip.corrected{background:#1a3a23;color:var(--primary);border-color:var(--primary)}
 .slider-row{margin-bottom:8px}
 .slider-lbl{display:flex;justify-content:space-between;margin-bottom:3px;font-size:10px;color:var(--muted)}
 .nudge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px}
 .nudge-btn{padding:8px 4px;border-radius:8px;background:var(--surface2);color:#c9d1d9;font-size:11px;font-weight:700;border:1px solid var(--border);cursor:pointer}
-.nudge-btn:active{background:var(--accent-dim)}
 .stats-row{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px 10px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;margin-bottom:10px}
 .sel-actions{display:flex;gap:6px;margin-bottom:10px}
 .btn-correct{flex:1;padding:8px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;border:none;background:var(--primary-dim);color:var(--primary)}
@@ -65,7 +57,7 @@ input[type=range]{accent-color:var(--accent);width:100%;cursor:pointer}
 .warn-flag{background:#3b1e1e;color:var(--danger);border:1px solid #5a2020}
 .photo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .photo-slot{cursor:pointer}
-.photo-slot-thumb{height:88px;border-radius:10px;overflow:hidden;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;position:relative;transition:border-color .15s}
+.photo-slot-thumb{height:88px;border-radius:10px;overflow:hidden;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;position:relative}
 .photo-slot-thumb.filled{border-color:var(--primary)}
 .photo-slot-thumb img{width:100%;height:100%;object-fit:cover}
 .photo-slot-check{position:absolute;top:4px;right:4px;background:var(--primary);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700}
@@ -83,15 +75,11 @@ input[type=range]{accent-color:var(--accent);width:100%;cursor:pointer}
 .ba-frame{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
 .ba-frame canvas{display:block;width:100%}
 .share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.share-btn{padding:12px 8px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--accent);line-height:1.5;cursor:pointer;transition:border-color .15s}
-.share-btn:hover{border-color:var(--accent)}
+.share-btn{padding:12px 8px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--accent);line-height:1.5;cursor:pointer}
 .share-btn-icon{font-size:20px;margin-bottom:3px;display:block}
-.prog-bar{height:4px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden}
-.prog-fill{height:100%;background:var(--primary);border-radius:2px;transition:width .3s}
 .mode-strip{display:flex;border-bottom:1px solid var(--border);background:var(--surface)}
-.mode-btn{flex:1;padding:9px;background:none;color:var(--muted);font-weight:500;font-size:11px;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s}
+.mode-btn{flex:1;padding:9px;background:none;color:var(--muted);font-weight:500;font-size:11px;border:none;border-bottom:2px solid transparent;cursor:pointer}
 .mode-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
-.tray-pill{display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:20px;padding:4px 10px;font-size:10px;color:var(--accent);font-weight:600;margin-bottom:8px}
 .arch-editor-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px}
 .arch-editor-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
 .arch-editor-title{font-weight:700;font-size:13px;color:#e2e8f0}
@@ -100,27 +88,11 @@ input[type=range]{accent-color:var(--accent);width:100%;cursor:pointer}
 .badge-pill{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:700}
 .tools-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:6px 10px;display:flex;align-items:center;justify-content:space-between}
 .tools-btn{font-size:10px;padding:4px 9px;border-radius:6px;background:transparent;color:var(--muted);font-weight:600;border:1px solid transparent;cursor:pointer}
-.tools-btn.active{background:var(--surface);border-color:var(--border);color:#c9d1d9}
 .tools-panel{padding:10px;border-bottom:1px solid var(--border)}
 .quick-actions{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px}
 .btn-correct-all{flex:1;padding:8px;border-radius:8px;background:#1a3a23;color:var(--primary);font-size:11px;font-weight:700;border:1px solid #2ea04344;cursor:pointer}
 .btn-reset-arch{padding:8px 14px;border-radius:8px;background:#3b1e1e;color:var(--danger);font-size:11px;font-weight:600;border:1px solid #5a2020;cursor:pointer}
-
-/* ── SAM mask indicator ── */
-.sam-badge{display:inline-flex;align-items:center;gap:5px;background:#2d1a4a;border:1px solid #8b5cf644;border-radius:20px;padding:3px 9px;font-size:9px;color:#a78bfa;font-weight:700}
-.sam-spinner{width:10px;height:10px;border:1.5px solid #a78bfa;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
-
-/* Settings panel */
-.settings-panel{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
-.settings-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.settings-label{font-size:12px;font-weight:600;color:#c9d1d9}
-.settings-hint{font-size:10px;color:var(--muted);margin-top:2px}
-
-@media print {
-  body{background:#fff;color:#000}
-  #header,#tabs,.tab-btn,.prim,.btn-correct-all,.btn-reset-arch,.share-grid,#new-case-btn{display:none!important}
-  #app{padding:0}
-}
+@media print{body{background:#fff;color:#000}#header,#tabs,.tab-btn,.prim,.btn-correct-all,.btn-reset-arch,.share-grid,#new-case-btn{display:none!important}#app{padding:0}}
 </style>
 </head>
 <body>
@@ -128,10 +100,7 @@ input[type=range]{accent-color:var(--accent);width:100%;cursor:pointer}
   <div id="header">
     <div id="header-top">
       <div id="logo">🦷</div>
-      <div id="title-block">
-        <h1>AlignerEst™</h1>
-        <p>AI Chairside Aligner Tool · SML</p>
-      </div>
+      <div id="title-block"><h1>AlignerEst™</h1><p>AI Chairside Aligner Tool · SML</p></div>
       <div id="pat-badge"></div>
     </div>
     <div id="tabs">
@@ -144,659 +113,214 @@ input[type=range]{accent-color:var(--accent);width:100%;cursor:pointer}
   </div>
   <div id="content"></div>
 </div>
-
 <script>
+const PRICE_PER_TRAY=65,LAB_FEE=225,MARKUP=1.4,CANVAS_W=680,CANVAS_H=520;
+const ROT_MAX=30,ROT_WARN=20,ROT_FLAG=25,ROT_ATTACH=18,DEG_PER_TRAY=5,MM_PER_TRAY=0.25;
+const UPPER_TEETH=[{id:6,label:'#6',name:'UR Canine',widthMm:7.5,heightMm:9.6},{id:7,label:'#7',name:'UR Lateral',widthMm:6.5,heightMm:8.3},{id:8,label:'#8',name:'UR Central',widthMm:8.5,heightMm:10.9},{id:9,label:'#9',name:'UL Central',widthMm:8.5,heightMm:10.9},{id:10,label:'#10',name:'UL Lateral',widthMm:6.5,heightMm:8.3},{id:11,label:'#11',name:'UL Canine',widthMm:7.5,heightMm:9.6}];
+const LOWER_TEETH=[{id:22,label:'#22',name:'LL Canine',widthMm:6.5,heightMm:8.3},{id:23,label:'#23',name:'LL Lateral',widthMm:6.0,heightMm:7.7},{id:24,label:'#24',name:'LL Central',widthMm:5.5,heightMm:7.1},{id:25,label:'#25',name:'LR Central',widthMm:5.5,heightMm:7.1},{id:26,label:'#26',name:'LR Lateral',widthMm:6.0,heightMm:7.7},{id:27,label:'#27',name:'LR Canine',widthMm:6.5,heightMm:8.3}];
 
+let state={tab:0,patName:'',patDOB:'',photos:{upper:null,lower:null,facial:null},upper:mkA(),lower:mkA()};
+function mkA(){return{placements:[],ppm:null,mode:'place',placeIdx:0,selId:null,showTools:false,brightness:100,contrast:100,saturation:100,zoom:1,panX:0,panY:0,aiStatus:null,samStatus:null,aiMsg:'',samMsg:'',_img:null,gumColor:null};}
+const IS={upper:mkI(),lower:mkI()};
+function mkI(){return{isPanning:false,lastTouch:null,pinchDist:null,calibStep:0,calibPt1:null,drag:null,rotHandle:null};}
 
-// ── Constants ──────────────────────────────────────────────────
-const PRICE_PER_TRAY = 65;
-const LAB_FEE = 225;
-const MARKUP = 1.4;
-const CANVAS_W = 680, CANVAS_H = 520;
-const ROT_MAX = 30;
-const ROT_WARN = 20, ROT_FLAG = 25, ROT_ATTACH = 18;
-const DEG_PER_TRAY = 5;
-const MM_PER_TRAY = 0.25;
-
-const UPPER_TEETH = [
-  { id:6,  label:"#6",  name:"UR Canine",  widthMm:7.5, heightMm:9.6 },
-  { id:7,  label:"#7",  name:"UR Lateral", widthMm:6.5, heightMm:8.3 },
-  { id:8,  label:"#8",  name:"UR Central", widthMm:8.5, heightMm:10.9 },
-  { id:9,  label:"#9",  name:"UL Central", widthMm:8.5, heightMm:10.9 },
-  { id:10, label:"#10", name:"UL Lateral", widthMm:6.5, heightMm:8.3 },
-  { id:11, label:"#11", name:"UL Canine",  widthMm:7.5, heightMm:9.6 },
-];
-const LOWER_TEETH = [
-  { id:22, label:"#22", name:"LL Canine",  widthMm:6.5, heightMm:8.3 },
-  { id:23, label:"#23", name:"LL Lateral", widthMm:6.0, heightMm:7.7 },
-  { id:24, label:"#24", name:"LL Central", widthMm:5.5, heightMm:7.1 },
-  { id:25, label:"#25", name:"LR Central", widthMm:5.5, heightMm:7.1 },
-  { id:26, label:"#26", name:"LR Lateral", widthMm:6.0, heightMm:7.7 },
-  { id:27, label:"#27", name:"LR Canine",  widthMm:6.5, heightMm:8.3 },
-];
-
-// ── App State ──────────────────────────────────────────────────
-let state = {
-  tab:0, patName:'', patDOB:'',
-  photos:{ upper:null, lower:null, facial:null },
-  upper: mkArchState(),
-  lower: mkArchState(),
-};
-
-function mkArchState() {
-  return {
-    placements:[], ppm:null, mode:'place', placeIdx:0, selId:null,
-    showTools:false, brightness:100, contrast:100, saturation:100,
-    zoom:1, panX:0, panY:0,
-    aiStatus:null,   // null | 'loading' | 'done' | 'error'
-    samStatus:null,  // null | 'loading' | 'done' | 'error'
-    aiMsg:'', samMsg:'',
-    _img:null,
-    gumColor:null,
-  };
-}
-
-const istate = { upper:mkIState(), lower:mkIState() };
-function mkIState() {
-  return { isPanning:false, lastTouch:null, pinchDist:null,
-           calibStep:0, calibPt1:null, drag:null, rotHandle:null };
-}
-
-// ── Tray Math ────────────────────────────────────────────────
-function toothTrays(p, ppm) {
-  if(!p.corrected||!p.placed) return 0;
-  const scale=ppm||6;
-  const dx=(p.x-p.idealX)/scale, dy=(p.y-p.idealY)/scale;
-  const transMm=Math.sqrt(dx*dx+dy*dy);
-  const transTrays=transMm/MM_PER_TRAY;
-  const rotTrays=Math.abs(p.rot||0)/DEG_PER_TRAY;
-  const total=Math.max(transTrays,rotTrays);
-  if(total===0) return 0;
-  if(total<1)   return 1;
-  return Math.ceil(total);
-}
-function archTrays(placements,ppm) {
-  if(!placements.length) return 0;
-  return Math.max(0,...placements.map(t=>toothTrays(t,ppm)));
-}
-function complexity(t) {
-  if(t===0)    return {label:'—',color:'#8b949e'};
-  if(t<=4)     return {label:'Simple',color:'#2ea043'};
-  if(t<=10)    return {label:'Moderate',color:'#d29922'};
-  return             {label:'Complex',color:'#f85149'};
-}
-function rotColor(rot) {
-  const r=Math.abs(rot||0);
-  if(r>=ROT_MAX)    return '#f85149';
-  if(r>=ROT_FLAG)   return '#e05f40';
-  if(r>=ROT_ATTACH) return '#d29922';
-  if(r>=ROT_WARN)   return '#ca8a04';
-  return null;
-}
+function tTrays(p,ppm){if(!p.corrected||!p.placed)return 0;const s=ppm||6,dx=(p.origX-p.idealX)/s,dy=(p.origY-p.idealY)/s,t=Math.sqrt(dx*dx+dy*dy)/MM_PER_TRAY,r=Math.abs(p.rot||0)/DEG_PER_TRAY,tot=Math.max(t,r);if(tot===0)return 0;return tot<1?1:Math.ceil(tot);}
+function aTrays(pl,ppm){return pl.length?Math.max(0,...pl.map(t=>tTrays(t,ppm))):0;}
+function cx(t){if(t===0)return{label:'—',color:'#8b949e'};if(t<=4)return{label:'Simple',color:'#2ea043'};if(t<=10)return{label:'Moderate',color:'#d29922'};return{label:'Complex',color:'#f85149'};}
+function rc(rot){const r=Math.abs(rot||0);if(r>=ROT_MAX)return'#f85149';if(r>=ROT_FLAG)return'#e05f40';if(r>=ROT_ATTACH)return'#d29922';if(r>=ROT_WARN)return'#ca8a04';return null;}
 function labCost(t){return t*PRICE_PER_TRAY+LAB_FEE;}
-function drCost(t) {return Math.round(labCost(t)*MARKUP/5)*5;}
+function drCost(t){return Math.round(labCost(t)*MARKUP/5)*5;}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// ══════════════════════════════════════════════════════════════════
-//  STEP 1 — CLAUDE VISION: Tooth center detection
-// ══════════════════════════════════════════════════════════════════
-async function runAIDetection(arch) {
-  const photo=state.photos[arch];
-  if(!photo) return;
+// ── AI Detection via /api/detect ──────────────────────────────
+async function runAI(arch){
+  const photo=state.photos[arch];if(!photo)return;
   const as=state[arch];
-  as.aiStatus='loading';
-  as.aiMsg='Claude Vision is locating teeth…';
-  as.samStatus=null; as.samMsg='';
+  as.aiStatus='loading';as.aiMsg='Claude Vision locating teeth…';as.samStatus=null;as.samMsg='';
   render();
-
-  try {
-    const teethLabels=(arch==='upper'?UPPER_TEETH:LOWER_TEETH)
-      .map(t=>`${t.label} (${t.name})`).join(', ');
-
-    const prompt=`You are a dental imaging AI. Analyze this intraoral ${arch} arch photograph.
-
-Identify these teeth: ${teethLabels}
-
-For each tooth visible, return its CENTER point as a fraction of image dimensions (0-1 range).
-Also estimate pixels-per-mm scale: tooth #${arch==='upper'?'8':'24'} is ~8.5mm wide (upper central) or 5.5mm wide (lower central).
-
-Respond ONLY with valid JSON, no markdown:
-{
-  "ppm": <number>,
-  "teeth": [
-    {"id": <tooth_number>, "cx": <0-1>, "cy": <0-1>, "visible": <true|false>}
-  ]
-}
-Include ALL teeth from the list even if not clearly visible (set visible:false). Order by tooth id.`;
-
-    const body={
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1000,
-      messages:[{
-        role:'user',
-        content:[
-          {type:'image',source:{type:'base64',media_type:'image/jpeg',data:photo.split(',')[1]||photo}},
-          {type:'text',text:prompt}
-        ]
-      }]
-    };
-
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify(body)
-    });
-
-    const data=await resp.json();
-    if(!resp.ok) throw new Error(data.error?.message||'Claude API error');
-
-    const text=data.content.map(b=>b.text||'').join('');
-    const clean=text.replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(clean);
-
-    const teethDefs=arch==='upper'?UPPER_TEETH:LOWER_TEETH;
+  try{
+    const b64=photo.includes(',')?photo.split(',')[1]:photo;
+    const mt=photo.startsWith('data:image/png')?'image/png':'image/jpeg';
+    const resp=await fetch('/api/detect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imageBase64:b64,imageType:mt,arch})});
+    const parsed=await resp.json();
+    if(!resp.ok)throw new Error(parsed.error||'Detection failed');
+    const td=arch==='upper'?UPPER_TEETH:LOWER_TEETH;
     as.ppm=parsed.ppm?(parsed.ppm*CANVAS_W/1000):6;
     as.placements=[];
-
-    for(const t of parsed.teeth) {
-      if(!t.visible) continue;
-      const def=teethDefs.find(d=>d.id===t.id);
-      if(!def) continue;
-      const ppm=as.ppm||6;
-      const x=t.cx*CANVAS_W, y=t.cy*CANVAS_H;
-      as.placements.push({
-        id:def.id, label:def.label, name:def.name,
-        widthMm:def.widthMm, heightMm:def.heightMm,
-        x, y, idealX:x, idealY:y,
-        wPx:def.widthMm*ppm, hPx:def.heightMm*ppm,
-        rot:0, corrected:false, placed:true,
-        // SAM polygon mask (null until fetched)
-        polygon:null,
-        samLoading:false,
-      });
+    for(const t of parsed.teeth){
+      if(!t.visible)continue;
+      const def=td.find(d=>d.id===t.id);if(!def)continue;
+      const ppm=as.ppm||6,x=t.cx*CANVAS_W,y=t.cy*CANVAS_H;
+      as.placements.push({id:def.id,label:def.label,name:def.name,widthMm:def.widthMm,heightMm:def.heightMm,
+        x,y,origX:x,origY:y,idealX:x,idealY:y,
+        wPx:def.widthMm*ppm,hPx:def.heightMm*ppm,rot:0,corrected:false,placed:true,polygon:null});
     }
-
-    as.placeIdx=as.placements.length;
-    as.mode='edit';
-    as.aiStatus='done';
-    as.aiMsg=`Claude found ${as.placements.length} teeth — running SAM segmentation…`;
+    as.placeIdx=as.placements.length;as.mode='edit';
+    as.aiStatus='done';as.aiMsg=`Found ${as.placements.length} teeth — segmenting…`;
     render();
-
-    // ── STEP 2: SAM polygon masks for each tooth ──────────────
-    await runSAMSegmentation(arch, photo);
-
-  } catch(err) {
-    as.aiStatus='error';
-    as.aiMsg='Claude detection failed: '+err.message+'. Place teeth manually.';
-    render();
-  }
+    await runSAM(arch,photo);
+  }catch(err){as.aiStatus='error';as.aiMsg='Detection failed: '+err.message;render();}
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  STEP 2 — ROBOFLOW SAM 2: Polygon mask per tooth
-// ══════════════════════════════════════════════════════════════════
-async function runSAMSegmentation(arch, photoDataUrl) {
-  const as=state[arch];
-  if(!as.placements.length) return;
-
-  as.samStatus='loading';
-  as.samMsg=`SAM segmenting ${as.placements.length} teeth…`;
-  render();
-
-  // Strip data URL prefix to get raw base64
-  const b64=photoDataUrl.includes(',') ? photoDataUrl.split(',')[1] : photoDataUrl;
-
-  // Roboflow SAM2 endpoint — embed image once, then segment each tooth by point
-  const BASE_URL='https://serverless.roboflow.com';
-  const IMAGE_ID=`alignerest_${arch}_${Date.now()}`;
-
-  let succeeded=0, failed=0;
-
-  for(const p of as.placements) {
-    try {
-      p.samLoading=true;
-
-      // Convert canvas coordinates to 0-1 fractions for Roboflow
-      const cx_frac = p.x / CANVAS_W;
-      const cy_frac = p.y / CANVAS_H;
-
-      // Roboflow SAM2 API: send image + click point, receive polygon mask
-      const payload={
-        image:{ type:'base64', value:b64 },
-        prompts:[{
-          type:'point',
-          x: cx_frac,
-          y: cy_frac,
-          label:1   // 1 = foreground (include)
-        }],
-        image_id: IMAGE_ID + '_' + p.id,
-      };
-
-      const resp=await fetch(`${BASE_URL}/sam2/embed_image?api_key=${ROBOFLOW_API_KEY}`,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload)
-      });
-
-      if(!resp.ok) {
-        throw new Error('SAM HTTP '+resp.status);
-      }
-
+// ── SAM Segmentation via /api/segment ─────────────────────────
+async function runSAM(arch,photo){
+  const as=state[arch];if(!as.placements.length)return;
+  as.samStatus='loading';as.samMsg=`Segmenting ${as.placements.length} teeth…`;render();
+  const b64=photo.includes(',')?photo.split(',')[1]:photo;
+  let ok=0;
+  for(const p of as.placements){
+    try{
+      const resp=await fetch('/api/segment',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({imageBase64:b64,cx:p.origX/CANVAS_W,cy:p.origY/CANVAS_H,imageId:`${arch}_${p.id}`})});
       const data=await resp.json();
-
-      // SAM returns masks array; take highest-scoring mask's polygon
-      if(data.masks && data.masks.length>0) {
-        const mask=data.masks[0]; // best mask
-        if(mask.polygon && mask.polygon.length>2) {
-          // Scale polygon from 0-1 fractions to canvas pixels
-          p.polygon = mask.polygon.map(([fx,fy])=>[fx*CANVAS_W, fy*CANVAS_H]);
-          succeeded++;
-        } else if(mask.points) {
-          // Some SAM responses return flat points array
-          const pts=[];
-          for(let i=0;i<mask.points.length;i+=2){
-            pts.push([mask.points[i]*CANVAS_W, mask.points[i+1]*CANVAS_H]);
-          }
-          if(pts.length>2) { p.polygon=pts; succeeded++; }
-        } else {
-          // Build bounding box polygon from mask bounds as fallback
-          p.polygon=buildBboxPolygon(p);
-          succeeded++;
-        }
-      } else {
-        // No mask returned — fall back to rounded-rect polygon
-        p.polygon=buildBboxPolygon(p);
-        succeeded++;
-      }
-
-    } catch(err) {
-      console.warn('SAM failed for tooth',p.label,err.message);
-      // Graceful fallback: build bounding-box polygon
-      p.polygon=buildBboxPolygon(p);
-      failed++;
-    } finally {
-      p.samLoading=false;
-      // Redraw incrementally as each mask arrives
-      const cv=getArchCanvas(arch);
-      if(cv) drawArchCanvas(arch,cv,'live');
-    }
+      if(data.polygon&&data.polygon.length>2){
+        p.polygon=data.polygon.map(([fx,fy])=>[fx*CANVAS_W,fy*CANVAS_H]);ok++;
+      }else{p.polygon=makeBbox(p);}
+    }catch{p.polygon=makeBbox(p);}
+    const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');
   }
-
-  as.samStatus='done';
-  if(failed>0 && succeeded===0) {
-    as.samMsg=`SAM unavailable — using bounding boxes. Add Roboflow key for true cutouts.`;
-  } else if(failed>0) {
-    as.samMsg=`${succeeded} teeth segmented with SAM polygons, ${failed} using bounding box fallback.`;
-  } else {
-    as.samMsg=`✓ ${succeeded} tooth polygons — real cutout edges active`;
-  }
+  as.samStatus='done';as.samMsg=ok>0?`✓ ${ok} polygon cutouts active`:'Using bounding box clips';
   render();
 }
 
-// Build a rounded-rectangle polygon as SAM fallback (8-point approximation)
-function buildBboxPolygon(p) {
-  const w=p.wPx||20, h=p.hPx||28, r=3;
-  const cx=p.x, cy=p.y;
-  const l=cx-w/2, t=cy-h/2, ri=cx+w/2, b=cy+h/2;
-  return [
-    [l+r,t],[ri-r,t],[ri,t+r],[ri,b-r],[ri-r,b],[l+r,b],[l,b-r],[l,t+r]
-  ];
-}
+function makeBbox(p){const w=p.wPx||20,h=p.hPx||28,cx=p.origX,cy=p.origY,l=cx-w/2,t=cy-h/2,ri=cx+w/2,b=cy+h/2,r=3;return[[l+r,t],[ri-r,t],[ri,t+r],[ri,b-r],[ri-r,b],[l+r,b],[l,b-r],[l,t+r]];}
+function tpoly(poly,dx,dy){return poly?poly.map(([x,y])=>[x+dx,y+dy]):null;}
+function rpoly(poly,cx,cy,deg){if(!poly)return null;const rad=deg*Math.PI/180,cos=Math.cos(rad),sin=Math.sin(rad);return poly.map(([x,y])=>{const dx=x-cx,dy=y-cy;return[cx+dx*cos-dy*sin,cy+dx*sin+dy*cos];});}
+function polyPath(ctx,poly){if(!poly||poly.length<3)return false;ctx.beginPath();ctx.moveTo(poly[0][0],poly[0][1]);for(let i=1;i<poly.length;i++)ctx.lineTo(poly[i][0],poly[i][1]);ctx.closePath();return true;}
 
-// ── Translate polygon by (dx,dy) ─────────────────────────────
-function translatePolygon(poly, dx, dy) {
-  if(!poly) return null;
-  return poly.map(([x,y])=>[x+dx,y+dy]);
-}
+// ── Canvas ────────────────────────────────────────────────────
+function getCV(arch){return document.getElementById('canvas-main-'+arch);}
 
-// ── Rotate polygon around center (cx,cy) by deg ──────────────
-function rotatePolygon(poly, cx, cy, deg) {
-  if(!poly) return null;
-  const rad=deg*Math.PI/180;
-  const cos=Math.cos(rad), sin=Math.sin(rad);
-  return poly.map(([x,y])=>{
-    const dx=x-cx, dy=y-cy;
-    return [cx+dx*cos-dy*sin, cy+dx*sin+dy*cos];
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════
-//  CANVAS RENDERING — polygon-clipped tooth sprites
-// ══════════════════════════════════════════════════════════════════
-function getArchCanvas(arch) { return document.getElementById('canvas-main-'+arch); }
-
-function sampleGumColor(ctx, placements) {
-  const w=CANVAS_W, h=CANVAS_H;
-  const samples=[[20,20],[w-20,20],[w/2,h-20],[20,h-20]];
+function sampleGum(ctx,pl){
   let r=0,g=0,b=0,n=0;
-  for(const [sx,sy] of samples) {
-    const near=placements.some(p=>Math.hypot(p.x-sx,p.y-sy)<30);
-    if(!near){const d=ctx.getImageData(sx,sy,1,1).data;r+=d[0];g+=d[1];b+=d[2];n++;}
+  for(const[sx,sy] of[[20,20],[CANVAS_W-20,20],[CANVAS_W/2,CANVAS_H-20],[20,CANVAS_H-20]]){
+    if(!pl.some(p=>Math.hypot(p.origX-sx,p.origY-sy)<30)){const d=ctx.getImageData(sx,sy,1,1).data;r+=d[0];g+=d[1];b+=d[2];n++;}
   }
-  if(!n) return {r:180,g:120,b:120};
-  return {r:Math.round(r/n),g:Math.round(g/n),b:Math.round(b/n)};
+  return n?{r:Math.round(r/n),g:Math.round(g/n),b:Math.round(b/n)}:{r:180,g:120,b:120};
 }
 
-// Apply a polygon path to the canvas context (for clipping or drawing)
-function applyPolygonPath(ctx, poly) {
-  if(!poly||poly.length<3) return false;
-  ctx.beginPath();
-  ctx.moveTo(poly[0][0], poly[0][1]);
-  for(let i=1;i<poly.length;i++) ctx.lineTo(poly[i][0],poly[i][1]);
-  ctx.closePath();
-  return true;
-}
-
-function drawArchCanvas(arch, canvas, mode='live') {
-  const as=state[arch];
-  const photo=state.photos[arch];
-  const ctx=canvas.getContext('2d');
-  const W=canvas.width, H=canvas.height;
+function drawCanvas(arch,canvas,mode='live'){
+  const as=state[arch],photo=state.photos[arch],ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
   ctx.clearRect(0,0,W,H);
-
-  if(photo && as._img) {
+  if(photo&&as._img){
     ctx.filter=`brightness(${as.brightness}%) contrast(${as.contrast}%) saturate(${as.saturation}%)`;
-    ctx.drawImage(as._img,0,0,W,H);
-    ctx.filter='none';
-  } else {
-    ctx.fillStyle='#0d1117'; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='#8b949e'; ctx.font='bold 14px DM Sans,system-ui'; ctx.textAlign='center';
-    ctx.fillText('Upload photo — teeth appear here',W/2,H/2-10);
-    ctx.font='11px DM Sans,system-ui'; ctx.fillStyle='#30363d';
-    ctx.fillText('Real patient photo with polygon-accurate tooth cutouts',W/2,H/2+10);
+    ctx.drawImage(as._img,0,0,W,H);ctx.filter='none';
+  }else{
+    ctx.fillStyle='#0d1117';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#8b949e';ctx.font='bold 14px system-ui';ctx.textAlign='center';
+    ctx.fillText('Upload photo — teeth appear here',W/2,H/2);
   }
-
-  const ppm=as.ppm||6;
-  const placements=as.placements.filter(p=>p.placed);
-
-  // ── BEFORE mode: red outlines at original positions ──────────
-  if(mode==='before') {
-    for(const p of placements) {
-      drawToothOutline(ctx,p,p.x,p.y,p.rot||0,'before',false,p,ppm);
+  const ppm=as.ppm||6,pl=as.placements.filter(p=>p.placed);
+  if(mode==='before'){for(const p of pl)drawOutline(ctx,p,p.origX,p.origY,p.rot||0,'before',false,p,ppm);return;}
+  if(mode==='after'){for(const p of pl){if(!p.corrected)continue;drawOutline(ctx,p,p.idealX,p.idealY,0,'after',false,p,ppm);}return;}
+  if(photo&&as._img){
+    const gum=as.gumColor||sampleGum(ctx,pl);as.gumColor=gum;
+    for(const p of pl){
+      if(!p.corrected)continue;
+      const moved=Math.hypot(p.origX-p.idealX,p.origY-p.idealY)>3||Math.abs(p.rot||0)>1;
+      if(!moved)continue;
+      ctx.save();ctx.globalAlpha=0.88;
+      if(p.polygon&&polyPath(ctx,p.polygon)){ctx.fillStyle=`rgb(${gum.r},${gum.g},${gum.b})`;ctx.fill();}
+      else{const grd=ctx.createRadialGradient(p.origX,p.origY,0,p.origX,p.origY,Math.max(p.wPx,p.hPx)*0.55);grd.addColorStop(0,`rgb(${gum.r},${gum.g},${gum.b})`);grd.addColorStop(1,`rgba(${gum.r},${gum.g},${gum.b},0)`);ctx.fillStyle=grd;ctx.beginPath();ctx.ellipse(p.origX,p.origY,(p.wPx||20)*0.6,(p.hPx||28)*0.6,0,0,Math.PI*2);ctx.fill();}
+      ctx.globalAlpha=1;ctx.restore();
     }
-    return;
+    for(const p of pl)drawSprite(ctx,as._img,p,as);
   }
-
-  // ── AFTER mode: green outlines at ideal positions ─────────────
-  if(mode==='after') {
-    for(const p of placements) {
-      if(!p.corrected) continue;
-      drawToothOutline(ctx,p,p.idealX,p.idealY,0,'after',false,p,ppm);
-    }
-    return;
-  }
-
-  // ── LIVE mode: polygon-clipped sprites ───────────────────────
-  if(photo && as._img) {
-    const gum=as.gumColor||sampleGumColor(ctx,placements);
-    as.gumColor=gum;
-
-    // Pass 1: fill gum color at old positions of moved/corrected teeth
-    for(const p of placements) {
-      if(!p.corrected) continue;
-      const moved=Math.hypot(p.x-p.idealX,p.y-p.idealY)>3||Math.abs(p.rot||0)>1;
-      if(!moved) continue;
-
-      ctx.save();
-      ctx.globalAlpha=0.88;
-      // If we have a polygon, use it as the gum-fill shape
-      if(p.polygon) {
-        const filled=applyPolygonPath(ctx,p.polygon);
-        if(filled){ctx.fillStyle=`rgb(${gum.r},${gum.g},${gum.b})`;ctx.fill();}
-      } else {
-        const grd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,Math.max(p.wPx,p.hPx)*0.55);
-        grd.addColorStop(0,`rgb(${gum.r},${gum.g},${gum.b})`);
-        grd.addColorStop(1,`rgba(${gum.r},${gum.g},${gum.b},0)`);
-        ctx.fillStyle=grd; ctx.beginPath();
-        ctx.ellipse(p.x,p.y,(p.wPx||20)*0.6,(p.hPx||28)*0.6,0,0,Math.PI*2);
-        ctx.fill();
-      }
-      ctx.globalAlpha=1;
-      ctx.restore();
-    }
-
-    // Pass 2: draw each tooth sprite, clipped to its polygon
-    for(const p of placements) {
-      drawToothSpritePolygon(ctx,as._img,p,as,W,H);
-    }
-  }
-
-  // Pass 3: outline overlays
-  for(const p of placements) {
-    const tx=p.corrected?p.idealX:p.x;
-    const ty=p.corrected?p.idealY:p.y;
-    const trot=p.corrected?0:(p.rot||0);
-    drawToothOutline(ctx,p,tx,ty,trot,'live',as.selId===p.id,p,ppm);
-  }
-
-  // Movement arrow for selected corrected tooth
-  const sel=placements.find(p=>p.id===as.selId);
-  if(sel&&sel.corrected&&(Math.hypot(sel.x-sel.idealX,sel.y-sel.idealY)>4||Math.abs(sel.rot)>1)) {
-    ctx.save();
-    ctx.strokeStyle='#2ea043';ctx.lineWidth=1.5;ctx.setLineDash([3,3]);ctx.globalAlpha=0.7;
-    ctx.beginPath();ctx.moveTo(sel.x,sel.y);ctx.lineTo(sel.idealX,sel.idealY);ctx.stroke();
-    ctx.restore();
-  }
-
-  // Place mode instruction bar
-  if(as.mode==='place') {
-    const teethDefs=arch==='upper'?UPPER_TEETH:LOWER_TEETH;
-    const next=teethDefs[as.placeIdx];
-    if(next){
-      ctx.save();
-      ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(0,H-28,W,28);
-      ctx.fillStyle='#fbbf24';ctx.font='bold 11px DM Sans,system-ui';ctx.textAlign='center';
-      ctx.fillText(`👆 Tap to place ${next.label} — ${next.name}`,W/2,H-10);
-      ctx.restore();
-    }
-  }
-
-  // Calibration point
-  const is=istate[arch];
-  if(as.mode==='calib'&&is.calibPt1){
-    ctx.save();ctx.fillStyle='#fbbf24';ctx.beginPath();
-    ctx.arc(is.calibPt1.x,is.calibPt1.y,6,0,Math.PI*2);ctx.fill();ctx.restore();
-  }
-
-  // Zoom indicator
-  if(as.zoom>1){
-    ctx.save();ctx.fillStyle='rgba(0,0,0,0.6)';ctx.beginPath();
-    ctx.roundRect(W-56,4,52,18,5);ctx.fill();
-    ctx.fillStyle='#58a6ff';ctx.font='bold 10px DM Sans,system-ui';ctx.textAlign='center';
-    ctx.fillText(`${as.zoom.toFixed(1)}x`,W-30,17);ctx.restore();
-  }
+  for(const p of pl)drawOutline(ctx,p,p.corrected?p.idealX:p.origX,p.corrected?p.idealY:p.origY,p.corrected?0:(p.rot||0),'live',as.selId===p.id,p,ppm);
+  const sel=pl.find(p=>p.id===as.selId);
+  if(sel&&sel.corrected&&(Math.hypot(sel.origX-sel.idealX,sel.origY-sel.idealY)>4||Math.abs(sel.rot)>1)){ctx.save();ctx.strokeStyle='#2ea043';ctx.lineWidth=1.5;ctx.setLineDash([3,3]);ctx.globalAlpha=0.7;ctx.beginPath();ctx.moveTo(sel.origX,sel.origY);ctx.lineTo(sel.idealX,sel.idealY);ctx.stroke();ctx.restore();}
+  if(as.mode==='place'){const td=arch==='upper'?UPPER_TEETH:LOWER_TEETH,next=td[as.placeIdx];if(next){ctx.save();ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(0,H-28,W,28);ctx.fillStyle='#fbbf24';ctx.font='bold 11px system-ui';ctx.textAlign='center';ctx.fillText(`👆 Tap to place ${next.label} — ${next.name}`,W/2,H-10);ctx.restore();}}
+  const is=IS[arch];if(as.mode==='calib'&&is.calibPt1){ctx.save();ctx.fillStyle='#fbbf24';ctx.beginPath();ctx.arc(is.calibPt1.x,is.calibPt1.y,6,0,Math.PI*2);ctx.fill();ctx.restore();}
+  if(as.zoom>1){ctx.save();ctx.fillStyle='rgba(0,0,0,0.6)';ctx.beginPath();ctx.roundRect(W-56,4,52,18,5);ctx.fill();ctx.fillStyle='#58a6ff';ctx.font='bold 10px system-ui';ctx.textAlign='center';ctx.fillText(`${as.zoom.toFixed(1)}x`,W-30,17);ctx.restore();}
 }
 
-// ── Polygon-clipped tooth sprite (the key rendering function) ──
-function drawToothSpritePolygon(ctx, img, p, as, W, H) {
-  const isCorr=p.corrected;
-  // Destination: where to draw (ideal position if corrected, else current)
-  const destX=isCorr?p.idealX:p.x;
-  const destY=isCorr?p.idealY:p.y;
-  const destRot=isCorr?0:(p.rot||0);
-
-  // Source crop: always from original position in the photo
-  const srcX=p.x, srcY=p.y;
-
+function drawSprite(ctx,img,p,as){
+  const w=p.wPx||20,h=p.hPx||28;
+  // origX/Y = where tooth is in photo (pixel source, never changes)
+  // idealX/Y = where tooth should be (target after correction)
+  const destX=p.corrected?p.idealX:p.origX;
+  const destY=p.corrected?p.idealY:p.origY;
+  const destRot=p.corrected?0:(p.rot||0);
   ctx.save();
-
-  if(p.polygon && p.polygon.length>2) {
-    // ── TRUE POLYGON CLIP (SAM mask) ───────────────────────────
-    // The polygon is stored in original-photo coords.
-    // If tooth has moved, we translate + rotate the polygon to the destination.
-    let drawPoly=p.polygon;
-
-    if(isCorr) {
-      // Translate from original position to ideal position
-      const ddx=p.idealX-p.x, ddy=p.idealY-p.y;
-      drawPoly=translatePolygon(p.polygon, ddx, ddy);
-      // If there's rotation correction (rot→0), rotate polygon around ideal center
-      if(Math.abs(p.rot||0)>0.5) {
-        drawPoly=rotatePolygon(drawPoly, p.idealX, p.idealY, -(p.rot||0));
-      }
+  if(p.polygon&&p.polygon.length>2){
+    let poly=p.polygon;
+    if(p.corrected){
+      poly=tpoly(poly,p.idealX-p.origX,p.idealY-p.origY);
+      if(Math.abs(p.rot||0)>0.5)poly=rpoly(poly,p.idealX,p.idealY,-(p.rot||0));
     }
-
-    // Clip to the polygon shape
-    if(applyPolygonPath(ctx, drawPoly)) {
-      ctx.clip();
-    }
-
-    // Draw the photo crop, rotated and translated
-    ctx.translate(destX, destY);
-    ctx.rotate(destRot*Math.PI/180);
-    const w=p.wPx||20, h=p.hPx||28;
-    ctx.filter=`brightness(${as.brightness}%) contrast(${as.contrast}%) saturate(${as.saturation}%)`;
-    // Source rectangle centered on original tooth position
-    ctx.drawImage(img, srcX-w/2, srcY-h/2, w, h, -w/2, -h/2, w, h);
-    ctx.filter='none';
-
-  } else {
-    // ── FALLBACK: rounded-rect clip ────────────────────────────
-    const w=p.wPx||20, h=p.hPx||28;
-    ctx.translate(destX, destY);
-    ctx.rotate(destRot*Math.PI/180);
-    ctx.beginPath();
-    ctx.roundRect(-w/2,-h/2,w,h,3);
-    ctx.clip();
-    ctx.filter=`brightness(${as.brightness}%) contrast(${as.contrast}%) saturate(${as.saturation}%)`;
-    ctx.drawImage(img, srcX-w/2, srcY-h/2, w, h, -w/2, -h/2, w, h);
-    ctx.filter='none';
+    if(polyPath(ctx,poly))ctx.clip();
+  }else{
+    ctx.translate(destX,destY);ctx.rotate(destRot*Math.PI/180);
+    ctx.beginPath();ctx.roundRect(-w/2,-h/2,w,h,3);ctx.clip();
+    ctx.translate(-destX,-destY);
   }
-
-  ctx.restore();
+  ctx.translate(destX,destY);ctx.rotate(destRot*Math.PI/180);
+  ctx.filter=`brightness(${as.brightness}%) contrast(${as.contrast}%) saturate(${as.saturation}%)`;
+  ctx.drawImage(img,p.origX-w/2,p.origY-h/2,w,h,-w/2,-h/2,w,h);
+  ctx.filter='none';ctx.restore();
 }
 
-function drawToothOutline(ctx, p, cx, cy, rot, mode, isSel, tooth, ppm) {
-  const w=tooth.wPx||20, h=tooth.hPx||28;
-  const rc=rotColor(tooth.rot);
+function drawOutline(ctx,p,dcx,dcy,drot,mode,isSel,tooth,ppm){
+  const w=tooth.wPx||20,h=tooth.hPx||28,color=rc(tooth.rot);
   let stroke,fill,lw;
   if(mode==='before'){stroke='#f85149';fill='rgba(248,81,73,0.18)';lw=1.8;}
   else if(mode==='after'){stroke='#2ea043';fill='rgba(46,160,67,0.18)';lw=1.8;}
-  else {
-    stroke=isSel?'#58a6ff':rc?rc:tooth.corrected?'#2ea043':'rgba(203,213,225,0.7)';
-    fill=isSel?'rgba(88,166,255,0.18)':tooth.corrected?'rgba(46,160,67,0.12)':'rgba(33,38,45,0.45)';
-    lw=isSel?2.5:1.8;
-  }
-  ctx.save();
-  ctx.translate(cx,cy);
-  ctx.rotate(rot*Math.PI/180);
-  ctx.beginPath();
-  ctx.roundRect(-w/2,-h/2,w,h,3);
-  ctx.fillStyle=fill;ctx.fill();
-  ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();
-  ctx.font='bold 7px DM Sans,monospace';
-  ctx.fillStyle=isSel?'#58a6ff':tooth.corrected?'#56d364':'#8b949e';
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(tooth.label,0,0);
-  if(tooth.corrected&&mode==='live'){
-    const trays=toothTrays(tooth,ppm);
-    if(trays>0){ctx.font='bold 7px DM Sans,monospace';ctx.fillStyle='#58a6ff';ctx.fillText(trays+'t',0,-h/2-6);}
-  }
-  if(isSel){
-    ctx.beginPath();ctx.roundRect(-w/2-4,-h/2-4,w+8,h+8,5);
-    ctx.strokeStyle='rgba(88,166,255,0.4)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.stroke();ctx.setLineDash([]);
-    ctx.fillStyle='#58a6ff';ctx.beginPath();ctx.arc(0,-h/2-12,5,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle='rgba(88,166,255,0.5)';ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(0,-h/2-7);ctx.lineTo(0,-h/2);ctx.stroke();
-  }
+  else{stroke=isSel?'#58a6ff':color||(tooth.corrected?'#2ea043':'rgba(203,213,225,0.7)');fill=isSel?'rgba(88,166,255,0.18)':tooth.corrected?'rgba(46,160,67,0.12)':'rgba(33,38,45,0.45)';lw=isSel?2.5:1.8;}
+  ctx.save();ctx.translate(dcx,dcy);ctx.rotate(drot*Math.PI/180);
+  ctx.beginPath();ctx.roundRect(-w/2,-h/2,w,h,3);ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();
+  ctx.font='bold 7px monospace';ctx.fillStyle=isSel?'#58a6ff':tooth.corrected?'#56d364':'#8b949e';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(tooth.label,0,0);
+  if(tooth.corrected&&mode==='live'){const tr=tTrays(tooth,ppm);if(tr>0){ctx.fillStyle='#58a6ff';ctx.fillText(tr+'t',0,-h/2-6);}}
+  if(isSel){ctx.beginPath();ctx.roundRect(-w/2-4,-h/2-4,w+8,h+8,5);ctx.strokeStyle='rgba(88,166,255,0.4)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#58a6ff';ctx.beginPath();ctx.arc(0,-h/2-12,5,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(88,166,255,0.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,-h/2-7);ctx.lineTo(0,-h/2);ctx.stroke();}
   ctx.restore();
-  if(rc&&mode==='live'){
-    ctx.save();ctx.translate(cx+w/2-2,cy-h/2+2);
-    ctx.fillStyle=rc;ctx.beginPath();ctx.arc(0,0,3.5,0,Math.PI*2);ctx.fill();ctx.restore();
-  }
+  if(color&&mode==='live'){ctx.save();ctx.translate(dcx+w/2-2,dcy-h/2+2);ctx.fillStyle=color;ctx.beginPath();ctx.arc(0,0,3.5,0,Math.PI*2);ctx.fill();ctx.restore();}
 }
 
-// ── Image loading ─────────────────────────────────────────────
-function loadArchImage(arch) {
-  const photo=state.photos[arch];
-  const as=state[arch];
+function loadImg(arch){
+  const photo=state.photos[arch],as=state[arch];
   if(!photo){as._img=null;return Promise.resolve();}
-  return new Promise(res=>{
-    const img=new Image();
-    img.onload=()=>{as._img=img;res();};
-    img.src=photo;
-  });
+  return new Promise(res=>{const img=new Image();img.onload=()=>{as._img=img;res();};img.src=photo;});
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  RENDER ENGINE
-// ══════════════════════════════════════════════════════════════════
-function render() {
+// ── Render ────────────────────────────────────────────────────
+function render(){
   document.getElementById('pat-badge').textContent=state.patName||'';
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===state.tab));
-  const c=document.getElementById('content');
-  c.innerHTML='';
-  if(state.tab===0) c.appendChild(renderPhotosTab());
-  else if(state.tab===1) c.appendChild(renderArchTab('upper'));
-  else if(state.tab===2) c.appendChild(renderArchTab('lower'));
-  else if(state.tab===3) c.appendChild(renderQuoteTab());
-  else if(state.tab===4) c.appendChild(renderReportTab());
+  const c=document.getElementById('content');c.innerHTML='';
+  if(state.tab===0)c.appendChild(rPhotos());
+  else if(state.tab===1)c.appendChild(rArch('upper'));
+  else if(state.tab===2)c.appendChild(rArch('lower'));
+  else if(state.tab===3)c.appendChild(rQuote());
+  else if(state.tab===4)c.appendChild(rReport());
   bindInputs();
-  setTimeout(()=>{
-    ['upper','lower'].forEach(arch=>{
-      const cv=getArchCanvas(arch);
-      if(cv) drawArchCanvas(arch,cv,'live');
-    });
-    bindCanvasEvents();
-  },0);
+  setTimeout(()=>{['upper','lower'].forEach(arch=>{const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');});bindEvents();},0);
 }
 
-// ── Tab 0: Photos ──────────────────────────────────────────────
-function renderPhotosTab() {
-  const hasAnthropicKey=ANTHROPIC_API_KEY&&ANTHROPIC_API_KEY!=='YOUR_ANTHROPIC_KEY_HERE';
-  const hasRoboflowKey=ROBOFLOW_API_KEY&&ROBOFLOW_API_KEY!=='YOUR_ROBOFLOW_KEY_HERE';
-
+function rPhotos(){
   const div=document.createElement('div');
   div.innerHTML=`
-    <div class="card">
-      <span class="sec-label">Patient Info</span>
-      <div style="margin-bottom:10px">
-        <label class="sec-label">Name</label>
-        <input class="inp" id="inp-name" value="${esc(state.patName)}" placeholder="Full name"/>
-      </div>
-      <div>
-        <label class="sec-label">Date of Birth</label>
-        <input class="inp" id="inp-dob" value="${esc(state.patDOB)}" placeholder="MM/DD/YYYY"/>
-      </div>
+    <div class="card"><span class="sec-label">Patient Info</span>
+      <div style="margin-bottom:10px"><label class="sec-label">Name</label><input class="inp" id="inp-name" value="${esc(state.patName)}" placeholder="Full name"/></div>
+      <div><label class="sec-label">Date of Birth</label><input class="inp" id="inp-dob" value="${esc(state.patDOB)}" placeholder="MM/DD/YYYY"/></div>
     </div>
-
-    ${!hasAnthropicKey||!hasRoboflowKey ? `
-    <div style="background:#3b1e1e;border:1px solid var(--danger);border-radius:12px;padding:12px 14px;margin-bottom:14px">
-      <div style="font-size:12px;color:var(--danger);font-weight:700;margin-bottom:6px">⚠️ API Keys Required</div>
-      <div style="font-size:11px;color:#f87171;line-height:1.7">
-        ${!hasAnthropicKey?'• <strong>Anthropic key</strong> missing — open the file and paste your key into ANTHROPIC_API_KEY<br>':''}
-        ${!hasRoboflowKey?'• <strong>Roboflow key</strong> missing — get a free key at roboflow.com, paste into ROBOFLOW_API_KEY<br>':''}
-        <span style="color:#8b949e;font-size:10px;display:block;margin-top:4px">Without Roboflow key, app still works but uses rectangular clips instead of polygon tooth cutouts.</span>
-      </div>
-    </div>` : ''}
-
-    <div class="card">
-      <span class="sec-label">Upload 3 Photos</span>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6">
-        Upload intraoral photos. AI will auto-detect and segment each tooth with precise polygon masks.
-      </div>
+    <div class="card"><span class="sec-label">Upload 3 Photos</span>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6">Take or upload intraoral photos. AI auto-detects and segments each tooth.</div>
       <div class="photo-grid">
-        ${renderPhotoSlot('upper','⬆️','Upper Arch','Straight down, mouth open')}
-        ${renderPhotoSlot('lower','⬇️','Lower Arch','Straight down, tongue back')}
-        ${renderPhotoSlot('facial','😬','Facial View','Lips retracted, camera level')}
+        ${rSlot('upper','⬆️','Upper Arch','Straight down, mouth open')}
+        ${rSlot('lower','⬇️','Lower Arch','Straight down, tongue back')}
+        ${rSlot('facial','😬','Facial View','Lips retracted, camera level')}
       </div>
     </div>
-
     <div style="background:var(--accent-dim);border:1px solid var(--accent);border-radius:12px;padding:12px 14px;margin-bottom:14px">
-      <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:6px">🤖 Two-AI Pipeline</div>
+      <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px">🤖 Two-AI Pipeline</div>
       <div style="font-size:11px;color:#8fb8e8;line-height:1.7">
-        <strong style="color:var(--accent)">Step 1 — Claude Vision:</strong> Identifies each tooth by number, locates center coordinates.<br>
-        <strong style="color:#a78bfa">Step 2 — Roboflow SAM:</strong> Segments the exact polygon outline of each tooth — real edges, not rectangles.<br>
-        <span style="color:var(--muted)">When you drag a tooth, the actual pixel cutout moves to the corrected position.</span>
+        <strong>Step 1 — Claude Vision:</strong> Finds each tooth by number and position.<br>
+        <strong>Step 2 — SAM:</strong> Cuts the exact polygon shape of each tooth.<br>
+        <span style="color:var(--muted)">Mark a tooth Corrected then drag it — real pixels move.</span>
       </div>
     </div>
-
-    <div class="tray-rule-box">
-      <strong>📐 Tray Math Rule:</strong> Each tray corrects up to <strong>5° of rotation</strong> or <strong>0.25mm of translation</strong>. Tray count = max(rotation÷5°, translation÷0.25mm), rounded up.
-    </div>
+    <div class="tray-rule-box"><strong>📐 Tray Math:</strong> Each tray corrects up to <strong>5° rotation</strong> or <strong>0.25mm translation</strong>.</div>
     <button class="prim" onclick="setTab(1)">Go to Upper Arch →</button>
-    <div style="height:8px"></div>
-  `;
+    <div style="height:8px"></div>`;
   ['upper','lower','facial'].forEach(id=>{
     const inp=document.createElement('input');
     inp.type='file';inp.accept='image/*';inp.capture='environment';
@@ -807,217 +331,123 @@ function renderPhotosTab() {
   return div;
 }
 
-function renderPhotoSlot(id,icon,label,hint) {
+function rSlot(id,icon,label,hint){
   const photo=state.photos[id];
   return `<div class="photo-slot" onclick="document.getElementById('file-${id}').click()">
     <div class="photo-slot-thumb ${photo?'filled':''}">
-      ${photo
-        ?`<img src="${photo}" alt="${label}"/><div class="photo-slot-check">✓</div>`
-        :`<div style="text-align:center"><div style="font-size:22px;margin-bottom:2px">${icon}</div><div style="font-size:9px;color:var(--muted)">Tap</div></div>`}
+      ${photo?`<img src="${photo}" alt="${label}"/><div class="photo-slot-check">✓</div>`:`<div style="text-align:center"><div style="font-size:22px;margin-bottom:2px">${icon}</div><div style="font-size:9px;color:var(--muted)">Tap</div></div>`}
     </div>
-    <div class="photo-slot-label">${label}</div>
-    <div class="photo-slot-hint">${hint}</div>
+    <div class="photo-slot-label">${label}</div><div class="photo-slot-hint">${hint}</div>
   </div>`;
 }
 
-function handlePhoto(id,e) {
-  const f=e.target.files[0];
-  if(!f) return;
+function handlePhoto(id,e){
+  const f=e.target.files[0];if(!f)return;
   const reader=new FileReader();
   reader.onload=ev=>{
     state.photos[id]=ev.target.result;
     if(id==='upper'||id==='lower'){
-      state[id].aiStatus=null;state[id].aiMsg='';
-      state[id].samStatus=null;state[id].samMsg='';
+      state[id].aiStatus=null;state[id].aiMsg='';state[id].samStatus=null;state[id].samMsg='';
       state[id].gumColor=null;state[id]._img=null;
-      loadArchImage(id).then(render);
-    } else { render(); }
+      loadImg(id).then(render);
+    }else render();
   };
   reader.readAsDataURL(f);
 }
 
-// ── Tab 1/2: Arch Editor ───────────────────────────────────────
-function renderArchTab(arch) {
-  const teethDefs=arch==='upper'?UPPER_TEETH:LOWER_TEETH;
-  const as=state[arch];
-  const photo=state.photos[arch];
-  const placed=as.placements.filter(p=>p.placed);
-  const corrected=as.placements.filter(p=>p.corrected);
-  const trayCount=archTrays(as.placements,as.ppm);
-  const sel=as.placements.find(p=>p.id===as.selId);
-  const complexC=complexity(trayCount);
-  const hasSAM=placed.some(p=>p.polygon&&p.polygon.length>4);
-
-  let statusText='';
-  if(as.mode==='calib') statusText=`📐 Calibration step ${istate[arch].calibStep+1}/2`;
-  else if(as.mode==='place'){
-    const next=teethDefs[as.placeIdx];
-    statusText=next?`👆 Tap: ${next.label} — ${next.name} (${as.placeIdx+1}/${teethDefs.length})`:'All placed — switch to Edit';
-  } else {
-    statusText=`${placed.length}/${teethDefs.length} placed · ${corrected.length} corrected`;
-  }
-
+function rArch(arch){
+  const td=arch==='upper'?UPPER_TEETH:LOWER_TEETH,as=state[arch],photo=state.photos[arch];
+  const placed=as.placements.filter(p=>p.placed),corrected=as.placements.filter(p=>p.corrected);
+  const trayCount=aTrays(as.placements,as.ppm),sel=as.placements.find(p=>p.id===as.selId),cxObj=cx(trayCount);
+  let st='';
+  if(as.mode==='calib')st=`📐 Calibration step ${IS[arch].calibStep+1}/2`;
+  else if(as.mode==='place'){const nx=td[as.placeIdx];st=nx?`👆 Tap: ${nx.label} — ${nx.name} (${as.placeIdx+1}/${td.length})`:'All placed';}
+  else st=`${placed.length}/${td.length} placed · ${corrected.length} corrected`;
   const div=document.createElement('div');
   div.innerHTML=`
-    ${!photo?`<div class="card" style="text-align:center;padding:20px">
-      <div style="font-size:32px;margin-bottom:8px">📷</div>
-      <div style="font-size:13px;color:var(--muted)">Upload the ${arch} arch photo in the Photos tab first.</div>
-      <button class="prim" style="margin-top:12px;width:auto;padding:10px 20px" onclick="setTab(0)">Upload Photo →</button>
+    ${!photo?`<div class="card" style="text-align:center;padding:20px"><div style="font-size:32px;margin-bottom:8px">📷</div><div style="font-size:13px;color:var(--muted)">Upload the ${arch} arch photo first.</div><button class="prim" style="margin-top:12px;width:auto;padding:10px 20px" onclick="setTab(0)">Upload Photo →</button></div>`:''}
+    ${photo&&as.aiStatus===null?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div><div style="font-size:12px;color:var(--muted);font-weight:600">🤖 Auto-detect &amp; segment teeth</div><div style="font-size:10px;color:#6e7681;margin-top:2px">Claude Vision → SAM polygons</div></div>
+      <button onclick="runAI('${arch}')" style="padding:7px 14px;border-radius:8px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;border:none;cursor:pointer;flex-shrink:0">Analyze with AI</button>
     </div>`:''}
-
-    ${photo&&as.aiStatus===null?`
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px">
-      <div>
-        <div style="font-size:12px;color:var(--muted);font-weight:600">🤖 Auto-detect &amp; segment teeth</div>
-        <div style="font-size:10px;color:#6e7681;margin-top:2px">Claude Vision → SAM polygon masks</div>
-      </div>
-      <button onclick="runAIDetection('${arch}')" style="padding:7px 14px;border-radius:8px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;border:none;cursor:pointer;flex-shrink:0">Analyze with AI</button>
-    </div>`:''}
-
-    ${as.aiStatus?`<div class="ai-status ${as.aiStatus==='error'?'err':as.aiStatus==='done'&&as.samStatus!=='done'?'loading':'done'}">
+    ${as.aiStatus?`<div class="ai-status ${as.aiStatus==='error'?'err':as.samStatus==='done'?'done':'loading'}">
       ${as.aiStatus==='loading'||as.samStatus==='loading'?'<div class="ai-spinner"></div>':'<span>'+(as.aiStatus==='error'?'✕':'✓')+'</span>'}
-      <div>
-        <div>${esc(as.aiMsg)}</div>
-        ${as.samMsg?`<div style="font-size:10px;color:${as.samStatus==='error'?'var(--warn)':'#a78bfa'};margin-top:2px">🔮 SAM: ${esc(as.samMsg)}</div>`:''}
-      </div>
+      <div><div>${esc(as.aiMsg)}</div>${as.samMsg?`<div style="font-size:10px;color:#a78bfa;margin-top:2px">🔮 ${esc(as.samMsg)}</div>`:''}</div>
     </div>`:''}
-
-    ${hasSAM?`<div style="background:#2d1a4a;border:1px solid #8b5cf644;border-radius:8px;padding:7px 11px;margin-bottom:10px;font-size:10px;color:#a78bfa;font-weight:600">
-      ✦ Polygon tooth cutouts active — drag teeth to see real pixel movement
-    </div>`:''}
-
     <div class="arch-editor-card">
       <div class="arch-editor-header">
-        <div>
-          <div class="arch-editor-title">${arch==='upper'?'Upper':'Lower'} Arch</div>
-          <div class="arch-editor-status">${statusText}</div>
-        </div>
+        <div><div class="arch-editor-title">${arch==='upper'?'Upper':'Lower'} Arch</div><div class="arch-editor-status">${st}</div></div>
         <div class="arch-header-badges">
           ${as.mode==='edit'&&!as.ppm?`<button style="font-size:10px;padding:4px 9px;border-radius:6px;background:#2d2008;color:var(--warn);font-weight:700;border:1px solid #5a4308;cursor:pointer" onclick="startCalib('${arch}')">📐 Calibrate</button>`:''}
           ${as.ppm?`<div class="badge-pill" style="background:#1a3a23;color:var(--primary);border:1px solid #2ea04344">${as.ppm.toFixed(1)}px/mm</div>`:''}
-          ${trayCount>0?`<div class="badge-pill" style="background:${complexC.color}22;color:${complexC.color};border:1px solid ${complexC.color}44">${trayCount}t</div>`:''}
+          ${trayCount>0?`<div class="badge-pill" style="background:${cxObj.color}22;color:${cxObj.color};border:1px solid ${cxObj.color}44">${trayCount}t</div>`:''}
         </div>
       </div>
-
       <div class="tools-bar">
-        <button class="tools-btn ${as.showTools?'active':''}" onclick="togglePhotoTools('${arch}')">🎨 Photo tools ${as.showTools?'▲':'▼'}</button>
-        <div style="display:flex;gap:8px;align-items:center">
-          ${as.zoom>1
-            ?`<button onclick="resetZoom('${arch}')" style="font-size:10px;padding:4px 9px;border-radius:6px;background:var(--accent);color:#fff;font-weight:700;border:none;cursor:pointer">Reset ${as.zoom.toFixed(1)}x</button>`
-            :`<span style="font-size:10px;color:var(--muted)">Pinch to zoom</span>`}
-        </div>
+        <button class="tools-btn ${as.showTools?'active':''}" onclick="toggleTools('${arch}')">🎨 Photo tools ${as.showTools?'▲':'▼'}</button>
+        <div>${as.zoom>1?`<button onclick="resetZoom('${arch}')" style="font-size:10px;padding:4px 9px;border-radius:6px;background:var(--accent);color:#fff;font-weight:700;border:none;cursor:pointer">Reset ${as.zoom.toFixed(1)}x</button>`:`<span style="font-size:10px;color:var(--muted)">Pinch to zoom</span>`}</div>
       </div>
       ${as.showTools?`<div class="tools-panel">
-        ${renderSlider(arch,'brightness','☀️ Brightness',50,200)}
-        ${renderSlider(arch,'contrast','◑ Contrast',50,200)}
-        ${renderSlider(arch,'saturation','🎨 Saturation',0,200)}
-        <button onclick="resetPhoto('${arch}')" style="font-size:10px;padding:4px 10px;border-radius:6px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);cursor:pointer;margin-top:4px">Reset photo</button>
+        ${rSlider(arch,'brightness','☀️ Brightness',50,200)}
+        ${rSlider(arch,'contrast','◑ Contrast',50,200)}
+        ${rSlider(arch,'saturation','🎨 Saturation',0,200)}
+        <button onclick="resetPhoto('${arch}')" style="font-size:10px;padding:4px 10px;border-radius:6px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);cursor:pointer;margin-top:4px">Reset</button>
       </div>`:''}
-
-      <div class="canvas-wrap" id="canvas-wrap-${arch}" style="aspect-ratio:${CANVAS_W}/${CANVAS_H}">
+      <div class="canvas-wrap" style="aspect-ratio:${CANVAS_W}/${CANVAS_H}">
         <canvas id="canvas-main-${arch}" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;height:100%;display:block"></canvas>
       </div>
-
       ${as.mode!=='calib'?`<div class="mode-strip">
-        <button class="mode-btn ${as.mode==='place'?'active':''}" onclick="setArchMode('${arch}','place')">👆 Place</button>
-        <button class="mode-btn ${as.mode==='edit'?'active':''}" onclick="setArchMode('${arch}','edit')">✏️ Edit</button>
+        <button class="mode-btn ${as.mode==='place'?'active':''}" onclick="setMode('${arch}','place')">👆 Place</button>
+        <button class="mode-btn ${as.mode==='edit'?'active':''}" onclick="setMode('${arch}','edit')">✏️ Edit</button>
       </div>`:''}
-
-      ${as.mode==='place'?`<div style="padding:10px 12px">
-        <div class="sec-label">Tap each tooth in order:</div>
-        <div class="tooth-row">
-          ${teethDefs.map((t,i)=>{
-            const p=as.placements.find(p=>p.id===t.id&&p.placed);
-            const isCur=i===as.placeIdx;
-            return `<div class="tooth-chip ${p?'placed':''} ${isCur&&!p?'sel':''}" onclick="jumpToTooth('${arch}',${i})">${p?'✓':''}${t.label}</div>`;
-          }).join('')}
-        </div>
-        ${placed.length>0?`<button onclick="setArchMode('${arch}','edit')" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;background:var(--accent-dim);color:var(--accent);font-weight:700;font-size:12px;border:1px solid var(--accent);cursor:pointer">Done placing → Switch to Edit</button>`:''}
-      </div>`:''}
-
-      ${as.mode==='edit'?renderEditPanel(arch,sel):''}
-
-      ${as.mode==='calib'?`<div style="padding:10px 12px;font-size:11px;color:var(--warn);line-height:1.6">
-        Tap the <strong>mesial (left)</strong> then <strong>distal (right)</strong> edge of the central incisor to calibrate mm scale.
-        <button onclick="cancelCalib('${arch}')" style="display:block;margin-top:8px;width:100%;padding:8px;border-radius:8px;background:var(--surface2);color:var(--muted);font-size:11px;font-weight:600;border:1px solid var(--border);cursor:pointer">Cancel</button>
-      </div>`:''}
-
+      ${as.mode==='place'?`<div style="padding:10px 12px"><div class="sec-label">Tap each tooth in order:</div>
+        <div class="tooth-row">${td.map((t,i)=>{const p=as.placements.find(p=>p.id===t.id&&p.placed),ic=i===as.placeIdx;return`<div class="tooth-chip ${p?'placed':''} ${ic&&!p?'sel':''}" onclick="jumpTo('${arch}',${i})">${p?'✓':''}${t.label}</div>`;}).join('')}</div>
+        ${placed.length>0?`<button onclick="setMode('${arch}','edit')" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;background:var(--accent-dim);color:var(--accent);font-weight:700;font-size:12px;border:1px solid var(--accent);cursor:pointer">Done → Edit</button>`:''}</div>`:''}
+      ${as.mode==='edit'?rEdit(arch,sel):''}
+      ${as.mode==='calib'?`<div style="padding:10px 12px;font-size:11px;color:var(--warn);line-height:1.6">Tap <strong>mesial</strong> then <strong>distal</strong> edge of central incisor to calibrate scale.
+        <button onclick="cancelCalib('${arch}')" style="display:block;margin-top:8px;width:100%;padding:8px;border-radius:8px;background:var(--surface2);color:var(--muted);font-size:11px;font-weight:600;border:1px solid var(--border);cursor:pointer">Cancel</button></div>`:''}
       <div class="quick-actions">
         <button class="btn-correct-all" onclick="correctAll('${arch}')">✓ Correct All</button>
         <button class="btn-reset-arch" onclick="resetArch('${arch}')">Reset</button>
       </div>
     </div>
-
-    ${trayCount>0?`
-    <div class="tray-banner">
-      <div>
-        <div style="font-size:13px;font-weight:700;color:var(--primary)">${arch==='upper'?'Upper':'Lower'} estimate</div>
-        <div style="font-size:11px;color:#56d364;margin-top:2px">${complexC.label} · ~${trayCount*2} weeks</div>
-      </div>
+    ${trayCount>0?`<div class="tray-banner">
+      <div><div style="font-size:13px;font-weight:700;color:var(--primary)">${arch==='upper'?'Upper':'Lower'} estimate</div><div style="font-size:11px;color:#56d364;margin-top:2px">${cxObj.label} · ~${trayCount*2} weeks</div></div>
       <div style="font-size:28px;font-weight:800;color:var(--primary)">${trayCount}<span style="font-size:13px"> trays</span></div>
     </div>
-    <div class="tray-rule-box" style="font-size:10px">
-      ⚙️ Rule: 1 tray per 5° rotation, 1 tray per 0.25mm translation. Tray count = worst-case single tooth movement.
-    </div>`:''}
-
+    <div class="tray-rule-box" style="font-size:10px">⚙️ 1 tray per 5° rotation, 1 tray per 0.25mm translation.</div>`:''}
     <button class="prim" onclick="setTab(${arch==='upper'?2:3})">${arch==='upper'?'Continue to Lower Arch →':'View Quote →'}</button>
-    <div style="height:8px"></div>
-  `;
+    <div style="height:8px"></div>`;
   return div;
 }
 
-function renderSlider(arch,prop,label,min,max) {
-  const val=state[arch][prop];
-  return `<div class="slider-row">
-    <div class="slider-lbl"><span>${label}</span><span style="font-family:monospace">${val}%</span></div>
-    <input type="range" min="${min}" max="${max}" step="5" value="${val}" oninput="updateProp('${arch}','${prop}',+this.value)"/>
-  </div>`;
-}
+function rSlider(arch,prop,label,min,max){const val=state[arch][prop];return`<div class="slider-row"><div class="slider-lbl"><span>${label}</span><span style="font-family:monospace">${val}%</span></div><input type="range" min="${min}" max="${max}" step="5" value="${val}" oninput="updateProp('${arch}','${prop}',+this.value)"/></div>`;}
 
-function renderEditPanel(arch,sel) {
-  const as=state[arch];
-  const ppm=as.ppm||6;
-  if(!sel) return `<div class="edit-panel">
-    <div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0">Tap a tooth in the photo to select and adjust it</div>
-    ${renderPlacedChips(arch)}
-  </div>`;
-
-  const selTrays=toothTrays(sel,ppm);
-  const rc=rotColor(sel.rot);
-  const movMm=Math.sqrt(Math.pow((sel.x-sel.idealX)/ppm,2)+Math.pow((sel.y-sel.idealY)/ppm,2)).toFixed(1);
+function rEdit(arch,sel){
+  const as=state[arch],ppm=as.ppm||6;
+  if(!sel)return`<div class="edit-panel"><div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0">Tap a tooth to select and adjust it</div>${rChips(arch)}</div>`;
+  const st=tTrays(sel,ppm),color=rc(sel.rot);
+  const movMm=Math.sqrt(Math.pow((sel.origX-sel.idealX)/ppm,2)+Math.pow((sel.origY-sel.idealY)/ppm,2)).toFixed(1);
   const rot=sel.rot||0;
-  const rotTrays=(Math.abs(rot)/DEG_PER_TRAY).toFixed(1);
-  const transTrays=(movMm/MM_PER_TRAY).toFixed(1);
-  const hasPoly=sel.polygon&&sel.polygon.length>4;
-
-  return `<div class="edit-panel">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-      <div>
-        <span style="font-weight:700;font-size:13px;color:#e2e8f0">${sel.name}</span>
-        <span style="font-size:10px;color:var(--muted);margin-left:5px">${sel.widthMm}mm</span>
-        ${selTrays>0?`<span style="font-size:11px;background:var(--accent-dim);color:var(--accent);padding:2px 7px;border-radius:8px;margin-left:6px;font-weight:700">${selTrays}t</span>`:''}
-      </div>
-      ${hasPoly?`<span class="sam-badge">✦ SAM polygon</span>`:`<span class="sam-badge" style="background:var(--surface2);border-color:var(--border);color:var(--muted)">rect clip</span>`}
+  return`<div class="edit-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div><span style="font-weight:700;font-size:13px">${sel.name}</span><span style="font-size:10px;color:var(--muted);margin-left:5px">${sel.widthMm}mm</span>${st>0?`<span style="font-size:11px;background:var(--accent-dim);color:var(--accent);padding:2px 7px;border-radius:8px;margin-left:6px;font-weight:700">${st}t</span>`:''}</div>
+      <span style="font-size:9px;color:#a78bfa;background:#2d1a4a;border:1px solid #8b5cf644;border-radius:20px;padding:3px 9px;font-weight:700">${sel.polygon&&sel.polygon.length>4?'✦ polygon':'rect'}</span>
     </div>
     ${Math.abs(rot)>=ROT_ATTACH&&Math.abs(rot)<ROT_MAX?`<div class="warn-box warn-attach">📎 ${Math.abs(rot).toFixed(0)}° — attachment recommended</div>`:''}
-    ${Math.abs(rot)>=ROT_FLAG?`<div class="warn-box warn-flag">⚠ ${Math.abs(rot).toFixed(0)}° — verify bite / interference check</div>`:''}
-
+    ${Math.abs(rot)>=ROT_FLAG?`<div class="warn-box warn-flag">⚠ ${Math.abs(rot).toFixed(0)}° — verify bite</div>`:''}
+    <div style="background:#1f3a6e;border:1px solid #58a6ff44;border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:11px;color:#8fb8e8;line-height:1.6">
+      1. Drag tooth to its <strong>corrected position</strong><br>2. Tap <strong>Mark Corrected</strong> to lock it in<br>3. The real tooth pixel moves to that position
+    </div>
     <div class="sel-actions">
       <button class="btn-correct ${sel.corrected?'done':''}" onclick="markCorrected('${arch}')">${sel.corrected?'✓ Corrected':'Mark Corrected'}</button>
       <button class="btn-remove" onclick="removeTooth('${arch}',${sel.id})">✕</button>
     </div>
-
     <div class="slider-row">
-      <div class="slider-lbl">
-        <span style="color:var(--muted);font-weight:600">↻ Rotation</span>
-        <span class="rot-display" style="font-family:monospace;color:${rc||'var(--accent)'};font-weight:700">${rot>0?'+':''}${rot.toFixed(1)}°${Math.abs(rot)>=ROT_MAX?' 🛑':''}</span>
-      </div>
-      <input type="range" min="-${ROT_MAX}" max="${ROT_MAX}" step="0.5" value="${rot}" style="accent-color:${rc||'#58a6ff'}" oninput="setRot('${arch}',${sel.id},+this.value)"/>
-      <div style="display:flex;justify-content:space-between;font-size:9px;color:#30363d;margin-top:2px">
-        <span>-${ROT_MAX}° mesial</span><span style="color:#6e7681">0° ideal</span><span>+${ROT_MAX}° distal</span>
-      </div>
+      <div class="slider-lbl"><span style="color:var(--muted);font-weight:600">↻ Rotation</span><span class="rot-display" style="font-family:monospace;color:${color||'var(--accent)'};font-weight:700">${rot>0?'+':''}${rot.toFixed(1)}°${Math.abs(rot)>=ROT_MAX?' 🛑':''}</span></div>
+      <input type="range" min="-${ROT_MAX}" max="${ROT_MAX}" step="0.5" value="${rot}" style="accent-color:${color||'#58a6ff'}" oninput="setRot('${arch}',${sel.id},+this.value)"/>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:#30363d;margin-top:2px"><span>-${ROT_MAX}° mesial</span><span>0°</span><span>+${ROT_MAX}° distal</span></div>
     </div>
-
     <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:6px">↔ Nudge position</div>
     <div class="nudge-grid">
       <button class="nudge-btn" onclick="adjPos('${arch}',${sel.id},-3,0)">← M</button>
@@ -1025,507 +455,226 @@ function renderEditPanel(arch,sel) {
       <button class="nudge-btn" onclick="adjPos('${arch}',${sel.id},0,-3)">↑</button>
       <button class="nudge-btn" onclick="adjPos('${arch}',${sel.id},0,3)">↓</button>
     </div>
-
     <div class="stats-row">
-      <div><div style="font-size:13px;font-weight:700;color:${rc||'#e2e8f0'}">${Math.abs(rot).toFixed(1)}°</div><div style="font-size:9px;color:var(--muted)">rotation</div><div style="font-size:8px;color:var(--muted)">${rotTrays}t needed</div></div>
-      <div><div style="font-size:13px;font-weight:700;color:#e2e8f0">${movMm}mm</div><div style="font-size:9px;color:var(--muted)">translation</div><div style="font-size:8px;color:var(--muted)">${transTrays}t needed</div></div>
-      <div><div style="font-size:13px;font-weight:700;color:var(--accent)">${selTrays}</div><div style="font-size:9px;color:var(--muted)">trays</div><div style="font-size:8px;color:var(--muted)">max(rot,trans)</div></div>
+      <div><div style="font-size:13px;font-weight:700;color:${color||'#e2e8f0'}">${Math.abs(rot).toFixed(1)}°</div><div style="font-size:9px;color:var(--muted)">rotation</div></div>
+      <div><div style="font-size:13px;font-weight:700">${movMm}mm</div><div style="font-size:9px;color:var(--muted)">translation</div></div>
+      <div><div style="font-size:13px;font-weight:700;color:var(--accent)">${st}</div><div style="font-size:9px;color:var(--muted)">trays</div></div>
     </div>
-    ${renderPlacedChips(arch)}
-  </div>`;
+    ${rChips(arch)}</div>`;
 }
 
-function renderPlacedChips(arch) {
-  const as=state[arch];
-  const placed=as.placements.filter(p=>p.placed).sort((a,b)=>a.id-b.id);
-  if(!placed.length) return '';
-  return `<div class="tooth-row" style="margin-top:8px">
-    ${placed.map(p=>{
-      const t=toothTrays(p,as.ppm||6);
-      const hasPoly=p.polygon&&p.polygon.length>4;
-      return `<div class="tooth-chip ${as.selId===p.id?'sel':''} ${p.corrected?'corrected':''}" onclick="selectTooth('${arch}',${p.id})" title="${hasPoly?'SAM polygon':'bounding box'}">${p.label}${t>0?` ${t}t`:''}</div>`;
-    }).join('')}
-  </div>`;
+function rChips(arch){
+  const as=state[arch],pl=as.placements.filter(p=>p.placed).sort((a,b)=>a.id-b.id);
+  if(!pl.length)return'';
+  return`<div class="tooth-row" style="margin-top:8px">${pl.map(p=>{const t=tTrays(p,as.ppm||6);return`<div class="tooth-chip ${as.selId===p.id?'sel':''} ${p.corrected?'corrected':''}" onclick="selTooth('${arch}',${p.id})">${p.label}${t>0?` ${t}t`:''}</div>`;}).join('')}</div>`;
 }
 
-// ── Tab 3: Quote ──────────────────────────────────────────────
-function renderQuoteTab() {
-  const uT=archTrays(state.upper.placements,state.upper.ppm);
-  const lT=archTrays(state.lower.placements,state.lower.ppm);
-  const combT=Math.max(uT,lT);
+function rQuote(){
+  const uT=aTrays(state.upper.placements,state.upper.ppm),lT=aTrays(state.lower.placements,state.lower.ppm),combT=Math.max(uT,lT);
   const div=document.createElement('div');
   div.innerHTML=`
-    <div style="background:#2d2008;border:1px solid #5a4308;border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
-      <span style="font-size:20px">🔒</span>
-      <div style="font-size:12px;color:var(--warn);font-weight:600">Doctor view only — never shown to patient</div>
+    <div style="background:#2d2008;border:1px solid #5a4308;border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px"><span style="font-size:20px">🔒</span><div style="font-size:12px;color:var(--warn);font-weight:600">Doctor view only</div></div>
+    <div class="card"><span class="sec-label">Case Summary</span>
+      ${state.patName?`<div style="font-size:13px;font-weight:600;margin-bottom:10px">${esc(state.patName)} · ${esc(state.patDOB)}</div>`:''}
+      <div class="quote-grid">${rQC('Upper',uT,cx(uT).color)}${rQC('Lower',lT,cx(lT).color)}${rQC('Combined',combT,'var(--accent)')}</div>
     </div>
-    <div class="tray-rule-box" style="margin-bottom:14px">
-      📐 <strong>5°/tray rule:</strong> Each tray = 5° rotation OR 0.25mm translation. Tray count per tooth = max of these, rounded up.
-    </div>
-    <div class="card">
-      <span class="sec-label">Case Summary</span>
-      ${state.patName?`<div style="font-size:13px;color:#e2e8f0;margin-bottom:10px;font-weight:600">${esc(state.patName)} · ${esc(state.patDOB)}</div>`:''}
-      <div class="quote-grid">
-        ${renderQuoteCell('Upper',uT,complexity(uT).color)}
-        ${renderQuoteCell('Lower',lT,complexity(lT).color)}
-        ${renderQuoteCell('Combined',combT,'var(--accent)')}
-      </div>
-    </div>
-    <div class="card">
-      <span class="sec-label">Your Lab Cost</span>
-      ${uT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#c9d1d9;margin-bottom:8px"><span>Upper (${uT}t × $${PRICE_PER_TRAY} + $${LAB_FEE})</span><span style="font-weight:700">$${labCost(uT).toLocaleString()}</span></div>`:''}
-      ${lT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#c9d1d9;margin-bottom:8px"><span>Lower (${lT}t × $${PRICE_PER_TRAY} + $${LAB_FEE})</span><span style="font-weight:700">$${labCost(lT).toLocaleString()}</span></div>`:''}
-      ${uT>0&&lT>0?`<div style="border-top:1px solid var(--border);padding-top:10px;display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:var(--accent)"><span>Combined</span><span>$${labCost(combT).toLocaleString()}</span></div>`:''}
+    <div class="card"><span class="sec-label">Lab Cost</span>
+      ${uT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span>Upper (${uT}t)</span><span style="font-weight:700">$${labCost(uT).toLocaleString()}</span></div>`:''}
+      ${lT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span>Lower (${lT}t)</span><span style="font-weight:700">$${labCost(lT).toLocaleString()}</span></div>`:''}
       ${uT===0&&lT===0?'<div style="color:var(--muted);font-size:13px">Complete arch mapping first.</div>':''}
     </div>
-    <div class="card">
-      <span class="sec-label">Suggested Patient Charge (×${MARKUP})</span>
-      ${uT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#c9d1d9;margin-bottom:8px"><span>Upper only</span><span style="font-weight:700;color:var(--primary)">$${drCost(uT).toLocaleString()}</span></div>`:''}
-      ${lT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#c9d1d9;margin-bottom:8px"><span>Lower only</span><span style="font-weight:700;color:var(--primary)">$${drCost(lT).toLocaleString()}</span></div>`:''}
+    <div class="card"><span class="sec-label">Suggested Patient Charge (×${MARKUP})</span>
+      ${uT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span>Upper</span><span style="font-weight:700;color:var(--primary)">$${drCost(uT).toLocaleString()}</span></div>`:''}
+      ${lT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span>Lower</span><span style="font-weight:700;color:var(--primary)">$${drCost(lT).toLocaleString()}</span></div>`:''}
       ${uT>0&&lT>0?`<div style="border-top:1px solid var(--border);padding-top:10px;display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:var(--primary)"><span>Combined</span><span>$${drCost(combT).toLocaleString()}</span></div>`:''}
-      <div style="font-size:10px;color:var(--muted);margin-top:10px">Doctor sets final fee — patient never sees this screen</div>
     </div>
-    <button class="prim" onclick="setTab(4)">Generate Patient Report →</button>
-    <div style="height:8px"></div>
-  `;
+    <button class="prim" onclick="setTab(4)">Generate Patient Report →</button><div style="height:8px"></div>`;
   return div;
 }
+function rQC(label,val,color){const c=cx(val);return`<div class="quote-cell"><div class="quote-cell-label">${label}</div><div class="quote-cell-val" style="color:${color}">${val||'—'}</div>${val?`<div class="quote-cell-sub" style="color:${c.color}">${c.label}</div>`:''}</div>`;}
 
-function renderQuoteCell(label,val,color) {
-  const c=complexity(val);
-  return `<div class="quote-cell">
-    <div class="quote-cell-label">${label}</div>
-    <div class="quote-cell-val" style="color:${color}">${val||'—'}</div>
-    ${val?`<div class="quote-cell-sub" style="color:${c.color}">${c.label}</div>`:''}
-  </div>`;
-}
-
-// ── Tab 4: Report ─────────────────────────────────────────────
-function renderReportTab() {
-  const uT=archTrays(state.upper.placements,state.upper.ppm);
-  const lT=archTrays(state.lower.placements,state.lower.ppm);
-  const combT=Math.max(uT,lT);
-  const up=state.upper.placements.filter(p=>p.placed);
-  const lp=state.lower.placements.filter(p=>p.placed);
+function rReport(){
+  const uT=aTrays(state.upper.placements,state.upper.ppm),lT=aTrays(state.lower.placements,state.lower.ppm),combT=Math.max(uT,lT);
+  const up=state.upper.placements.filter(p=>p.placed),lp=state.lower.placements.filter(p=>p.placed);
   const div=document.createElement('div');
   div.innerHTML=`
     <div class="card" style="text-align:center;padding:22px 16px;background:linear-gradient(135deg,var(--surface),#1a3a23)">
       <div style="font-size:36px;margin-bottom:10px">🦷</div>
-      <div style="font-weight:800;font-size:20px;color:#e2e8f0;margin-bottom:4px">${esc(state.patName)||'Your Smile Plan'}</div>
+      <div style="font-weight:800;font-size:20px;margin-bottom:4px">${esc(state.patName)||'Your Smile Plan'}</div>
       <div style="font-size:12px;color:var(--muted)">AlignerEst™ Treatment Preview</div>
     </div>
-
-    ${state.photos.facial?`<div class="card" style="padding:10px">
-      <span class="sec-label">Your Current Smile</span>
-      <img src="${state.photos.facial}" alt="smile" style="width:100%;border-radius:8px;max-height:180px;object-fit:cover;display:block"/>
-    </div>`:''}
-
-    ${(up.length||lp.length)?`<div class="card" style="padding:12px">
-      <span class="sec-label">Before &amp; After — Actual Tooth Movement</span>
+    ${state.photos.facial?`<div class="card" style="padding:10px"><span class="sec-label">Your Current Smile</span><img src="${state.photos.facial}" alt="smile" style="width:100%;border-radius:8px;max-height:180px;object-fit:cover;display:block"/></div>`:''}
+    ${(up.length||lp.length)?`<div class="card" style="padding:12px"><span class="sec-label">Before &amp; After</span>
       <div class="ba-grid">
-        ${up.length?renderBAPanel('upper',up,'before'):''}
-        ${up.length?renderBAPanel('upper',up,'after'):''}
-        ${lp.length?renderBAPanel('lower',lp,'before'):''}
-        ${lp.length?renderBAPanel('lower',lp,'after'):''}
-      </div>
-    </div>`:''}
-
-    <div class="card">
-      <span class="sec-label">Your Treatment Plan</span>
+        ${up.length?`<div><div class="ba-label" style="color:var(--danger)">🔴 BEFORE — Upper</div><div class="ba-frame"><canvas id="ba-upper-before" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;display:block"></canvas></div></div>`:''} 
+        ${up.length?`<div><div class="ba-label" style="color:var(--primary)">✅ AFTER — Upper</div><div class="ba-frame"><canvas id="ba-upper-after" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;display:block"></canvas></div></div>`:''}
+        ${lp.length?`<div><div class="ba-label" style="color:var(--danger)">🔴 BEFORE — Lower</div><div class="ba-frame"><canvas id="ba-lower-before" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;display:block"></canvas></div></div>`:''}
+        ${lp.length?`<div><div class="ba-label" style="color:var(--primary)">✅ AFTER — Lower</div><div class="ba-frame"><canvas id="ba-lower-after" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;display:block"></canvas></div></div>`:''}
+      </div></div>`:''}
+    <div class="card"><span class="sec-label">Treatment Plan</span>
       <div style="display:grid;grid-template-columns:${uT>0&&lT>0?'1fr 1fr':'1fr'};gap:8px;margin-bottom:10px">
-        ${uT>0?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center"><div style="font-size:10px;color:var(--muted);margin-bottom:3px">Upper Arch</div><div style="font-size:26px;font-weight:800;color:#e2e8f0">${uT}</div><div style="font-size:11px;color:var(--muted)">trays · ~${uT*2} weeks</div></div>`:''}
-        ${lT>0?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center"><div style="font-size:10px;color:var(--muted);margin-bottom:3px">Lower Arch</div><div style="font-size:26px;font-weight:800;color:#e2e8f0">${lT}</div><div style="font-size:11px;color:var(--muted)">trays · ~${lT*2} weeks</div></div>`:''}
+        ${uT>0?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center"><div style="font-size:10px;color:var(--muted);margin-bottom:3px">Upper Arch</div><div style="font-size:26px;font-weight:800">${uT}</div><div style="font-size:11px;color:var(--muted)">trays · ~${uT*2} weeks</div></div>`:''}
+        ${lT>0?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center"><div style="font-size:10px;color:var(--muted);margin-bottom:3px">Lower Arch</div><div style="font-size:26px;font-weight:800">${lT}</div><div style="font-size:11px;color:var(--muted)">trays · ~${lT*2} weeks</div></div>`:''}
       </div>
-      ${uT>0&&lT>0?`<div style="background:linear-gradient(135deg,var(--accent-dim),#1a3a23);border:1px solid var(--accent);border-radius:10px;padding:13px;text-align:center"><div style="font-size:10px;color:var(--accent);margin-bottom:3px">Combined Treatment</div><div style="font-size:22px;font-weight:800;color:var(--accent)">${combT} trays · ~${combT*2} weeks</div></div>`:''}
-      ${uT===0&&lT===0?'<div style="color:var(--muted);font-size:13px">Complete arch mapping to see your treatment plan.</div>':''}
+      ${uT>0&&lT>0?`<div style="background:linear-gradient(135deg,var(--accent-dim),#1a3a23);border:1px solid var(--accent);border-radius:10px;padding:13px;text-align:center"><div style="font-size:10px;color:var(--accent);margin-bottom:3px">Combined</div><div style="font-size:22px;font-weight:800;color:var(--accent)">${combT} trays · ~${combT*2} weeks</div></div>`:''}
+      ${uT===0&&lT===0?'<div style="color:var(--muted);font-size:13px">Complete arch mapping to see your plan.</div>':''}
     </div>
-    <div class="card">
-      <p style="font-size:13px;color:#8b949e;line-height:1.7">Your AlignerEst™ aligners are custom-made, removable, and virtually invisible. Each tray corrects up to 5° of rotation and 0.25mm of movement. Your doctor will confirm the final treatment plan after a full clinical evaluation.</p>
-    </div>
-    <div style="font-size:10px;color:#8b949e;line-height:1.6;margin-bottom:16px;padding:0 2px">
-      Treatment estimates are based on visual assessment and subject to clinical review. AlignerEst™ is a chairside estimation tool by Space Maintainers Laboratories.
-    </div>
+    <div class="card"><p style="font-size:13px;color:#8b949e;line-height:1.7">Your AlignerEst™ aligners are custom-made, removable, and virtually invisible. Your doctor will confirm the final plan after a full clinical evaluation.</p></div>
     <div class="share-grid">
-      <button class="share-btn" onclick="shareReport('Text')"><span class="share-btn-icon">📱</span>Text</button>
-      <button class="share-btn" onclick="shareReport('Email')"><span class="share-btn-icon">📧</span>Email</button>
+      <button class="share-btn" onclick="shareR('Text')"><span class="share-btn-icon">📱</span>Text</button>
+      <button class="share-btn" onclick="shareR('Email')"><span class="share-btn-icon">📧</span>Email</button>
       <button class="share-btn" onclick="window.print()"><span class="share-btn-icon">🖨️</span>Print</button>
     </div>
     <button class="prim" id="new-case-btn" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border)" onclick="resetCase()">+ Start New Case</button>
-    <div style="height:8px"></div>
-  `;
-  setTimeout(()=>{
-    ['upper','lower'].forEach(arch=>{
-      const bef=document.getElementById('ba-canvas-'+arch+'-before');
-      const aft=document.getElementById('ba-canvas-'+arch+'-after');
-      if(bef) drawArchCanvas(arch,bef,'before');
-      if(aft) drawArchCanvas(arch,aft,'after');
-    });
-  },0);
+    <div style="height:8px"></div>`;
+  setTimeout(()=>{['upper','lower'].forEach(arch=>{const b=document.getElementById(`ba-${arch}-before`),a=document.getElementById(`ba-${arch}-after`);if(b)drawCanvas(arch,b,'before');if(a)drawCanvas(arch,a,'after');});},0);
   return div;
 }
 
-function renderBAPanel(arch,placements,mode) {
-  const isBefore=mode==='before';
-  const archLabel=arch==='upper'?'Upper':'Lower';
-  return `<div>
-    <div class="ba-label" style="color:${isBefore?'var(--danger)':'var(--primary)'}">${isBefore?'🔴 BEFORE':'✅ AFTER'} — ${archLabel}</div>
-    <div class="ba-frame">
-      <canvas id="ba-canvas-${arch}-${mode}" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;display:block"></canvas>
-    </div>
-  </div>`;
-}
-
-// ── Canvas event handling ─────────────────────────────────────
-function bindCanvasEvents() {
+// ── Canvas events ─────────────────────────────────────────────
+function bindEvents(){
   ['upper','lower'].forEach(arch=>{
-    const cv=getArchCanvas(arch);
-    if(!cv) return;
-    const newCv=cv.cloneNode(true);
-    cv.parentNode.replaceChild(newCv,cv);
-    const canvas=newCv;
-    canvas.addEventListener('mousedown',e=>handleMouseDown(e,arch),{passive:false});
-    canvas.addEventListener('mousemove',e=>handleMouseMove(e,arch),{passive:false});
-    canvas.addEventListener('mouseup',e=>handleMouseUp(e,arch),{passive:false});
-    canvas.addEventListener('click',e=>handleCanvasClick(e,arch),{passive:false});
-    canvas.addEventListener('touchstart',e=>handleTouchStart(e,arch),{passive:false});
-    canvas.addEventListener('touchmove',e=>handleTouchMove(e,arch),{passive:false});
-    canvas.addEventListener('touchend',e=>handleTouchEnd(e,arch),{passive:false});
+    const cv=getCV(arch);if(!cv)return;
+    const nc=cv.cloneNode(true);cv.parentNode.replaceChild(nc,cv);
+    nc.addEventListener('mousedown',e=>mDown(e,arch),{passive:false});
+    nc.addEventListener('mousemove',e=>mMove(e,arch),{passive:false});
+    nc.addEventListener('mouseup',e=>mUp(e,arch),{passive:false});
+    nc.addEventListener('click',e=>mClick(e,arch),{passive:false});
+    nc.addEventListener('touchstart',e=>tStart(e,arch),{passive:false});
+    nc.addEventListener('touchmove',e=>tMove(e,arch),{passive:false});
+    nc.addEventListener('touchend',e=>tEnd(e,arch),{passive:false});
   });
 }
 
-function getCanvasPoint(e,arch) {
-  const canvas=getArchCanvas(arch); if(!canvas) return null;
-  const as=state[arch];
-  const rect=canvas.getBoundingClientRect();
-  const scaleX=CANVAS_W/rect.width, scaleY=CANVAS_H/rect.height;
+function getPt(e,arch){
+  const cv=getCV(arch);if(!cv)return null;
+  const as=state[arch],rect=cv.getBoundingClientRect();
+  const sx=CANVAS_W/rect.width,sy=CANVAS_H/rect.height;
   const clientX=e.touches?e.touches[0].clientX:e.clientX;
   const clientY=e.touches?e.touches[0].clientY:e.clientY;
-  const rawX=(clientX-rect.left)*scaleX;
-  const rawY=(clientY-rect.top)*scaleY;
-  return {
-    x:(rawX-CANVAS_W/2-as.panX)/as.zoom+CANVAS_W/2,
-    y:(rawY-CANVAS_H/2-as.panY)/as.zoom+CANVAS_H/2,
-  };
+  const rx=(clientX-rect.left)*sx,ry=(clientY-rect.top)*sy;
+  return{x:(rx-CANVAS_W/2-as.panX)/as.zoom+CANVAS_W/2,y:(ry-CANVAS_H/2-as.panY)/as.zoom+CANVAS_H/2};
 }
 
-let mouseDownPos=null, isDragging=false;
+let mdPos=null,dragging=false;
 
-function handleMouseDown(e,arch) {
-  const as=state[arch]; const is=istate[arch];
-  const pt=getCanvasPoint(e,arch); if(!pt) return;
-  mouseDownPos={x:e.clientX,y:e.clientY}; isDragging=false;
+function mDown(e,arch){
+  const as=state[arch],is=IS[arch],pt=getPt(e,arch);if(!pt)return;
+  mdPos={x:e.clientX,y:e.clientY};dragging=false;
   if(as.mode==='edit'&&as.selId){
     const sel=as.placements.find(p=>p.id===as.selId);
     if(sel){
-      const w=sel.wPx||20, h=sel.hPx||28;
-      const hdx=pt.x-(sel.corrected?sel.idealX:sel.x);
-      const hdy=pt.y-(sel.corrected?sel.idealY:sel.y);
+      const w=sel.wPx||20,h=sel.hPx||28;
+      const dcx=sel.corrected?sel.idealX:sel.origX,dcy=sel.corrected?sel.idealY:sel.origY;
+      const hdx=pt.x-dcx,hdy=pt.y-dcy;
       const rotRad=(sel.corrected?0:(sel.rot||0))*Math.PI/180;
-      const rotX=hdx*Math.cos(-rotRad)-hdy*Math.sin(-rotRad);
-      const rotY=hdx*Math.sin(-rotRad)+hdy*Math.cos(-rotRad);
-      if(Math.hypot(rotX,rotY+h/2+12)<10){
-        is.rotHandle={startAngle:Math.atan2(hdy,hdx),startRot:sel.rot||0,toothId:sel.id};
-        e.preventDefault(); return;
-      }
-      if(Math.abs(rotX)<w/2+4&&Math.abs(rotY)<h/2+4){
-        is.drag={toothId:sel.id,startX:pt.x,startY:pt.y,origX:sel.x,origY:sel.y};
-        e.preventDefault(); return;
-      }
+      const rotX=hdx*Math.cos(-rotRad)-hdy*Math.sin(-rotRad),rotY=hdx*Math.sin(-rotRad)+hdy*Math.cos(-rotRad);
+      if(Math.hypot(rotX,rotY+h/2+12)<10){is.rotHandle={startAngle:Math.atan2(hdy,hdx),startRot:sel.rot||0,toothId:sel.id};e.preventDefault();return;}
+      if(Math.abs(rotX)<w/2+4&&Math.abs(rotY)<h/2+4){is.drag={toothId:sel.id,startX:pt.x,startY:pt.y,origX:sel.corrected?sel.idealX:sel.origX,origY:sel.corrected?sel.idealY:sel.origY};e.preventDefault();return;}
     }
   }
 }
 
-function handleMouseMove(e,arch) {
-  const as=state[arch]; const is=istate[arch];
-  const pt=getCanvasPoint(e,arch); if(!pt) return;
-  if(mouseDownPos&&!isDragging){const d=Math.hypot(e.clientX-mouseDownPos.x,e.clientY-mouseDownPos.y);if(d>5)isDragging=true;}
+function mMove(e,arch){
+  const as=state[arch],is=IS[arch],pt=getPt(e,arch);if(!pt)return;
+  if(mdPos&&!dragging&&Math.hypot(e.clientX-mdPos.x,e.clientY-mdPos.y)>5)dragging=true;
   if(is.rotHandle&&is.rotHandle.toothId){
     const sel=as.placements.find(p=>p.id===is.rotHandle.toothId);
-    if(sel){
-      const cx=sel.corrected?sel.idealX:sel.x, cy=sel.corrected?sel.idealY:sel.y;
-      const angle=Math.atan2(pt.y-cy,pt.x-cx);
-      const delta=(angle-is.rotHandle.startAngle)*180/Math.PI;
-      sel.rot=Math.max(-ROT_MAX,Math.min(ROT_MAX,Math.round((is.rotHandle.startRot+delta)*2)/2));
-      const cv=getArchCanvas(arch); if(cv) drawArchCanvas(arch,cv,'live');
-      updateEditPanelLive(arch,sel); e.preventDefault();
-    }
+    if(sel){const dcx=sel.corrected?sel.idealX:sel.origX,dcy=sel.corrected?sel.idealY:sel.origY,angle=Math.atan2(pt.y-dcy,pt.x-dcx),delta=(angle-is.rotHandle.startAngle)*180/Math.PI;sel.rot=Math.max(-ROT_MAX,Math.min(ROT_MAX,Math.round((is.rotHandle.startRot+delta)*2)/2));const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');updateRot(arch,sel);e.preventDefault();}
     return;
   }
   if(is.drag&&is.drag.toothId){
     const sel=as.placements.find(p=>p.id===is.drag.toothId);
     if(sel){
-      const dx=pt.x-is.drag.startX, dy=pt.y-is.drag.startY;
-      sel.x=is.drag.origX+dx; sel.y=is.drag.origY+dy;
-      if(sel.corrected){sel.idealX=sel.x;sel.idealY=sel.y;}
-      const cv=getArchCanvas(arch); if(cv) drawArchCanvas(arch,cv,'live');
-      e.preventDefault();
+      const nx=is.drag.origX+(pt.x-is.drag.startX),ny=is.drag.origY+(pt.y-is.drag.startY);
+      if(sel.corrected){sel.idealX=nx;sel.idealY=ny;}
+      else{sel.origX=nx;sel.origY=ny;sel.x=nx;sel.y=ny;}
+      const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');e.preventDefault();
     }
   }
 }
 
-function handleMouseUp(e,arch) {
-  const is=istate[arch]; const wasDrag=isDragging;
-  is.drag=null; is.rotHandle=null; mouseDownPos=null;
-  if(!wasDrag) return;
-  isDragging=false; render();
-}
+function mUp(e,arch){const is=IS[arch],was=dragging;is.drag=null;is.rotHandle=null;mdPos=null;if(!was)return;dragging=false;render();}
+function mClick(e,arch){if(dragging){dragging=false;return;}tap(e,arch);}
 
-function handleCanvasClick(e,arch) {
-  if(isDragging){isDragging=false;return;}
-  processCanvasTap(e,arch);
-}
-
-function handleTouchStart(e,arch) {
-  const as=state[arch]; const is=istate[arch];
-  if(e.touches.length===2){
-    is.pinchDist=getPinchDist(e.touches);
-    is.isPanning=false; e.preventDefault(); return;
-  }
-  is.lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY,t:Date.now()};
-  mouseDownPos={x:e.touches[0].clientX,y:e.touches[0].clientY}; isDragging=false;
+function tStart(e,arch){
+  const as=state[arch],is=IS[arch];
+  if(e.touches.length===2){is.pinchDist=pDist(e.touches);e.preventDefault();return;}
+  is.lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};mdPos={x:e.touches[0].clientX,y:e.touches[0].clientY};dragging=false;
   if(as.mode==='edit'&&as.selId){
-    const pt=getCanvasPoint(e,arch);
-    if(pt){
-      const sel=as.placements.find(p=>p.id===as.selId);
-      if(sel){
-        const w=sel.wPx||20,h=sel.hPx||28;
-        const hdx=pt.x-(sel.corrected?sel.idealX:sel.x);
-        const hdy=pt.y-(sel.corrected?sel.idealY:sel.y);
-        const rotRad=(sel.corrected?0:(sel.rot||0))*Math.PI/180;
-        const rotX=hdx*Math.cos(-rotRad)-hdy*Math.sin(-rotRad);
-        const rotY=hdx*Math.sin(-rotRad)+hdy*Math.cos(-rotRad);
-        if(Math.hypot(rotX,rotY+h/2+12)<14){
-          is.rotHandle={startAngle:Math.atan2(hdy,hdx),startRot:sel.rot||0,toothId:sel.id};
-          e.preventDefault(); return;
-        }
-        if(Math.abs(rotX)<w/2+8&&Math.abs(rotY)<h/2+8){
-          is.drag={toothId:sel.id,startX:pt.x,startY:pt.y,origX:sel.x,origY:sel.y};
-          e.preventDefault(); return;
-        }
-      }
-    }
+    const pt=getPt(e,arch);if(pt){const sel=as.placements.find(p=>p.id===as.selId);if(sel){const w=sel.wPx||20,h=sel.hPx||28,dcx=sel.corrected?sel.idealX:sel.origX,dcy=sel.corrected?sel.idealY:sel.origY,hdx=pt.x-dcx,hdy=pt.y-dcy,rotRad=(sel.corrected?0:(sel.rot||0))*Math.PI/180,rotX=hdx*Math.cos(-rotRad)-hdy*Math.sin(-rotRad),rotY=hdx*Math.sin(-rotRad)+hdy*Math.cos(-rotRad);if(Math.hypot(rotX,rotY+h/2+12)<14){is.rotHandle={startAngle:Math.atan2(hdy,hdx),startRot:sel.rot||0,toothId:sel.id};e.preventDefault();return;}if(Math.abs(rotX)<w/2+8&&Math.abs(rotY)<h/2+8){is.drag={toothId:sel.id,startX:pt.x,startY:pt.y,origX:sel.corrected?sel.idealX:sel.origX,origY:sel.corrected?sel.idealY:sel.origY};e.preventDefault();return;}}}
   }
   e.preventDefault();
 }
 
-function handleTouchMove(e,arch) {
-  const as=state[arch]; const is=istate[arch];
-  if(e.touches.length===2&&is.pinchDist!=null){
-    const newDist=getPinchDist(e.touches);
-    const ratio=newDist/is.pinchDist;
-    as.zoom=Math.max(1,Math.min(4,as.zoom*ratio));
-    is.pinchDist=newDist;
-    const cv=getArchCanvas(arch); if(cv) drawArchCanvas(arch,cv,'live');
-    e.preventDefault(); return;
-  }
-  if(is.rotHandle&&is.rotHandle.toothId){
-    const pt=getCanvasPoint(e,arch);
-    if(pt){
-      const sel=as.placements.find(p=>p.id===is.rotHandle.toothId);
-      if(sel){
-        const cx=sel.corrected?sel.idealX:sel.x,cy=sel.corrected?sel.idealY:sel.y;
-        const angle=Math.atan2(pt.y-cy,pt.x-cx);
-        const delta=(angle-is.rotHandle.startAngle)*180/Math.PI;
-        sel.rot=Math.max(-ROT_MAX,Math.min(ROT_MAX,Math.round((is.rotHandle.startRot+delta)*2)/2));
-        const cv=getArchCanvas(arch); if(cv) drawArchCanvas(arch,cv,'live');
-        updateEditPanelLive(arch,sel);
-      }
-    }
-    e.preventDefault(); return;
-  }
-  if(is.drag&&is.drag.toothId){
-    const pt=getCanvasPoint(e,arch);
-    if(pt){
-      const sel=as.placements.find(p=>p.id===is.drag.toothId);
-      if(sel){
-        const dx=pt.x-is.drag.startX,dy=pt.y-is.drag.startY;
-        sel.x=is.drag.origX+dx; sel.y=is.drag.origY+dy;
-        if(sel.corrected){sel.idealX=sel.x;sel.idealY=sel.y;}
-        if(mouseDownPos){const d=Math.hypot(e.touches[0].clientX-mouseDownPos.x,e.touches[0].clientY-mouseDownPos.y);if(d>5)isDragging=true;}
-        const cv=getArchCanvas(arch); if(cv) drawArchCanvas(arch,cv,'live');
-      }
-    }
-    e.preventDefault(); return;
-  }
-  if(as.zoom>1&&is.lastTouch){
-    const dx=e.touches[0].clientX-is.lastTouch.x;
-    const dy=e.touches[0].clientY-is.lastTouch.y;
-    as.panX+=dx; as.panY+=dy;
-    is.lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};
-    if(Math.abs(dx)>3||Math.abs(dy)>3) isDragging=true;
-    const cv=getArchCanvas(arch); if(cv) drawArchCanvas(arch,cv,'live');
-    e.preventDefault();
-  }
+function tMove(e,arch){
+  const as=state[arch],is=IS[arch];
+  if(e.touches.length===2&&is.pinchDist!=null){const nd=pDist(e.touches);as.zoom=Math.max(1,Math.min(4,as.zoom*nd/is.pinchDist));is.pinchDist=nd;const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');e.preventDefault();return;}
+  if(is.rotHandle&&is.rotHandle.toothId){const pt=getPt(e,arch);if(pt){const sel=as.placements.find(p=>p.id===is.rotHandle.toothId);if(sel){const dcx=sel.corrected?sel.idealX:sel.origX,dcy=sel.corrected?sel.idealY:sel.origY,a=Math.atan2(pt.y-dcy,pt.x-dcx),d=(a-is.rotHandle.startAngle)*180/Math.PI;sel.rot=Math.max(-ROT_MAX,Math.min(ROT_MAX,Math.round((is.rotHandle.startRot+d)*2)/2));const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');updateRot(arch,sel);}}e.preventDefault();return;}
+  if(is.drag&&is.drag.toothId){const pt=getPt(e,arch);if(pt){const sel=as.placements.find(p=>p.id===is.drag.toothId);if(sel){const nx=is.drag.origX+(pt.x-is.drag.startX),ny=is.drag.origY+(pt.y-is.drag.startY);if(sel.corrected){sel.idealX=nx;sel.idealY=ny;}else{sel.origX=nx;sel.origY=ny;sel.x=nx;sel.y=ny;}if(mdPos&&Math.hypot(e.touches[0].clientX-mdPos.x,e.touches[0].clientY-mdPos.y)>5)dragging=true;const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');}}e.preventDefault();return;}
+  if(as.zoom>1&&is.lastTouch){const dx=e.touches[0].clientX-is.lastTouch.x,dy=e.touches[0].clientY-is.lastTouch.y;as.panX+=dx;as.panY+=dy;is.lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};if(Math.abs(dx)>3||Math.abs(dy)>3)dragging=true;const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');e.preventDefault();}
 }
 
-function handleTouchEnd(e,arch) {
-  const is=istate[arch]; const hadDrag=isDragging;
-  is.pinchDist=null;
-  if(is.drag||is.rotHandle){is.drag=null;is.rotHandle=null;if(hadDrag)render();isDragging=false;is.isPanning=false;is.lastTouch=null;return;}
-  if(!hadDrag&&is.lastTouch){processCanvasTap({touches:e.changedTouches,clientX:e.changedTouches[0].clientX,clientY:e.changedTouches[0].clientY},arch);}
-  if(hadDrag) render();
-  is.isPanning=false; is.lastTouch=null;
-}
+function tEnd(e,arch){const is=IS[arch],was=dragging;is.pinchDist=null;if(is.drag||is.rotHandle){is.drag=null;is.rotHandle=null;if(was)render();dragging=false;is.lastTouch=null;return;}if(!was&&is.lastTouch)tap({touches:e.changedTouches,clientX:e.changedTouches[0].clientX,clientY:e.changedTouches[0].clientY},arch);if(was)render();is.lastTouch=null;}
+function pDist(t){return Math.sqrt(Math.pow(t[0].clientX-t[1].clientX,2)+Math.pow(t[0].clientY-t[1].clientY,2));}
 
-function getPinchDist(touches){const dx=touches[0].clientX-touches[1].clientX,dy=touches[0].clientY-touches[1].clientY;return Math.sqrt(dx*dx+dy*dy);}
-
-function processCanvasTap(e,arch) {
-  const as=state[arch]; const is=istate[arch];
-  const teethDefs=arch==='upper'?UPPER_TEETH:LOWER_TEETH;
-  const pt=getCanvasPoint(e,arch); if(!pt) return;
-
+function tap(e,arch){
+  const as=state[arch],is=IS[arch],td=arch==='upper'?UPPER_TEETH:LOWER_TEETH,pt=getPt(e,arch);if(!pt)return;
   if(as.mode==='calib'){
-    if(is.calibStep===0){is.calibPt1=pt;is.calibStep=1;const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');}
-    else {
-      const refTooth=arch==='upper'?8.5:5.5;
-      const dist=Math.hypot(pt.x-is.calibPt1.x,pt.y-is.calibPt1.y);
-      as.ppm=dist/refTooth;
-      as.placements.forEach(p=>{p.wPx=p.widthMm*as.ppm;p.hPx=p.heightMm*as.ppm;});
-      as.mode='edit';is.calibStep=0;is.calibPt1=null;render();
-    }
+    if(is.calibStep===0){is.calibPt1=pt;is.calibStep=1;const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');}
+    else{as.ppm=Math.hypot(pt.x-is.calibPt1.x,pt.y-is.calibPt1.y)/(arch==='upper'?8.5:5.5);as.placements.forEach(p=>{p.wPx=p.widthMm*as.ppm;p.hPx=p.heightMm*as.ppm;});as.mode='edit';is.calibStep=0;is.calibPt1=null;render();}
     return;
   }
-
   if(as.mode==='place'){
-    const next=teethDefs[as.placeIdx]; if(!next) return;
-    const ppm=as.ppm||6;
+    const next=td[as.placeIdx];if(!next)return;const ppm=as.ppm||6;
     as.placements=as.placements.filter(p=>p.id!==next.id);
-    as.placements.push({
-      id:next.id,label:next.label,name:next.name,
-      widthMm:next.widthMm,heightMm:next.heightMm,
-      x:pt.x,y:pt.y,idealX:pt.x,idealY:pt.y,
-      wPx:next.widthMm*ppm,hPx:next.heightMm*ppm,
-      rot:0,corrected:false,placed:true,
-      polygon:null,samLoading:false,
-    });
-    if(as.placeIdx<teethDefs.length-1){as.placeIdx++;}
-    else{as.mode='edit';as.selId=null;}
-    render(); return;
+    as.placements.push({id:next.id,label:next.label,name:next.name,widthMm:next.widthMm,heightMm:next.heightMm,x:pt.x,y:pt.y,origX:pt.x,origY:pt.y,idealX:pt.x,idealY:pt.y,wPx:next.widthMm*ppm,hPx:next.heightMm*ppm,rot:0,corrected:false,placed:true,polygon:null});
+    if(as.placeIdx<td.length-1)as.placeIdx++;else{as.mode='edit';as.selId=null;}
+    render();return;
   }
-
   if(as.mode==='edit'){
-    const tapped=as.placements.find(p=>{
-      if(!p.placed) return false;
-      const cx=p.corrected?p.idealX:p.x, cy=p.corrected?p.idealY:p.y;
-      const rot=(p.corrected?0:(p.rot||0))*Math.PI/180;
-      const dx=pt.x-cx, dy=pt.y-cy;
-      const rx=dx*Math.cos(-rot)-dy*Math.sin(-rot);
-      const ry=dx*Math.sin(-rot)+dy*Math.cos(-rot);
-      return Math.abs(rx)<=(p.wPx||20)/2+4&&Math.abs(ry)<=(p.hPx||28)/2+4;
-    });
-    as.selId=tapped?(as.selId===tapped.id?null:tapped.id):null;
-    render();
+    const tapped=as.placements.find(p=>{if(!p.placed)return false;const dcx=p.corrected?p.idealX:p.origX,dcy=p.corrected?p.idealY:p.origY,rot=(p.corrected?0:(p.rot||0))*Math.PI/180,dx=pt.x-dcx,dy=pt.y-dcy,rx=dx*Math.cos(-rot)-dy*Math.sin(-rot),ry=dx*Math.sin(-rot)+dy*Math.cos(-rot);return Math.abs(rx)<=(p.wPx||20)/2+4&&Math.abs(ry)<=(p.hPx||28)/2+4;});
+    as.selId=tapped?(as.selId===tapped.id?null:tapped.id):null;render();
   }
 }
 
-function updateEditPanelLive(arch,sel) {
-  const rotSpan=document.querySelector('.rot-display');
-  if(rotSpan){
-    const rc=rotColor(sel.rot), rot=sel.rot||0;
-    rotSpan.style.color=rc||'var(--accent)';
-    rotSpan.textContent=(rot>0?'+':'')+rot.toFixed(1)+'°'+(Math.abs(rot)>=ROT_MAX?' 🛑':'');
-  }
-}
+function updateRot(arch,sel){const s=document.querySelector('.rot-display');if(s){const color=rc(sel.rot),rot=sel.rot||0;s.style.color=color||'var(--accent)';s.textContent=(rot>0?'+':'')+rot.toFixed(1)+'°'+(Math.abs(rot)>=ROT_MAX?' 🛑':'');}}
 
 // ── State helpers ─────────────────────────────────────────────
 function setTab(n){state.tab=n;render();}
-function setArchMode(arch,mode){state[arch].mode=mode;state[arch].selId=null;render();}
-function jumpToTooth(arch,idx){state[arch].placeIdx=idx;render();}
-function togglePhotoTools(arch){state[arch].showTools=!state[arch].showTools;render();}
+function setMode(arch,mode){state[arch].mode=mode;state[arch].selId=null;render();}
+function jumpTo(arch,idx){state[arch].placeIdx=idx;render();}
+function toggleTools(arch){state[arch].showTools=!state[arch].showTools;render();}
 function resetZoom(arch){state[arch].zoom=1;state[arch].panX=0;state[arch].panY=0;render();}
 function resetPhoto(arch){state[arch].brightness=100;state[arch].contrast=100;state[arch].saturation=100;state[arch].zoom=1;state[arch].panX=0;state[arch].panY=0;render();}
-function startCalib(arch){state[arch].mode='calib';istate[arch].calibStep=0;istate[arch].calibPt1=null;render();}
-function cancelCalib(arch){state[arch].mode='edit';istate[arch].calibStep=0;istate[arch].calibPt1=null;render();}
-
-function updateProp(arch,prop,val){
-  state[arch][prop]=val;
-  if(['brightness','contrast','saturation'].includes(prop)){
-    const cv=getArchCanvas(arch);if(cv) drawArchCanvas(arch,cv,'live');
-    document.querySelectorAll('.slider-lbl span:last-child').forEach(el=>{if(el.textContent.endsWith('%'))el.textContent=val+'%';});
-  } else render();
-}
-
-function setRot(arch,id,val){
-  const p=state[arch].placements.find(p=>p.id===id);
-  if(p){
-    p.rot=Math.max(-ROT_MAX,Math.min(ROT_MAX,Math.round(val*10)/10));
-    const cv=getArchCanvas(arch);if(cv) drawArchCanvas(arch,cv,'live');
-    const rotSpan=document.querySelector('.rot-display');
-    if(rotSpan){const rc=rotColor(p.rot);rotSpan.style.color=rc||'var(--accent)';rotSpan.textContent=(p.rot>0?'+':'')+p.rot.toFixed(1)+'°'+(Math.abs(p.rot)>=ROT_MAX?' 🛑':'');}
-  }
-}
-
-function adjPos(arch,id,dx,dy){
-  const p=state[arch].placements.find(p=>p.id===id);
-  if(p){p.x+=dx;p.y+=dy;if(p.corrected){p.idealX=p.x;p.idealY=p.y;}render();}
-}
-
+function startCalib(arch){state[arch].mode='calib';IS[arch].calibStep=0;IS[arch].calibPt1=null;render();}
+function cancelCalib(arch){state[arch].mode='edit';IS[arch].calibStep=0;IS[arch].calibPt1=null;render();}
+function updateProp(arch,prop,val){state[arch][prop]=val;if(['brightness','contrast','saturation'].includes(prop)){const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');document.querySelectorAll('.slider-lbl span:last-child').forEach(el=>{if(el.textContent.endsWith('%'))el.textContent=val+'%';});}else render();}
+function setRot(arch,id,val){const p=state[arch].placements.find(p=>p.id===id);if(p){p.rot=Math.max(-ROT_MAX,Math.min(ROT_MAX,Math.round(val*10)/10));const cv=getCV(arch);if(cv)drawCanvas(arch,cv,'live');const s=document.querySelector('.rot-display');if(s){const color=rc(p.rot);s.style.color=color||'var(--accent)';s.textContent=(p.rot>0?'+':'')+p.rot.toFixed(1)+'°'+(Math.abs(p.rot)>=ROT_MAX?' 🛑':'');}}}
+function adjPos(arch,id,dx,dy){const p=state[arch].placements.find(p=>p.id===id);if(p){if(p.corrected){p.idealX+=dx;p.idealY+=dy;}else{p.origX+=dx;p.origY+=dy;p.x+=dx;p.y+=dy;}render();}}
 function markCorrected(arch){
-  const as=state[arch];
-  const p=as.placements.find(p=>p.id===as.selId);
-  if(p){p.corrected=!p.corrected;if(p.corrected){p.idealX=p.x;p.idealY=p.y;}render();}
-}
-
-function correctAll(arch){
-  state[arch].placements.forEach(p=>{if(p.placed&&!p.corrected){p.corrected=true;p.idealX=p.x;p.idealY=p.y;}});
-  state[arch].selId=null;render();
-}
-
-function removeTooth(arch,id){
-  const as=state[arch];
-  as.placements=as.placements.filter(p=>p.id!==id);
-  if(as.selId===id) as.selId=null;
-  const teethDefs=arch==='upper'?UPPER_TEETH:LOWER_TEETH;
-  const idx=teethDefs.findIndex(t=>t.id===id);
-  if(idx!==-1){as.placeIdx=idx;as.mode='place';}
-  render();
-}
-
-function selectTooth(arch,id){state[arch].selId=state[arch].selId===id?null:id;render();}
-
-function resetArch(arch){
-  state[arch]=mkArchState();state[arch]._img=null;
-  loadArchImage(arch).then(render);istate[arch]=mkIState();
-}
-
-function resetCase(){
-  state={tab:0,patName:'',patDOB:'',photos:{upper:null,lower:null,facial:null},upper:mkArchState(),lower:mkArchState()};
-  istate.upper=mkIState();istate.lower=mkIState();render();
-}
-
-function shareReport(method){
-  const uT=archTrays(state.upper.placements,state.upper.ppm);
-  const lT=archTrays(state.lower.placements,state.lower.ppm);
-  const combT=Math.max(uT,lT);
-  const name=state.patName||'Patient';
-  if(method==='Email'){
-    const subject=encodeURIComponent(`AlignerEst™ Treatment Plan — ${name}`);
-    const body=encodeURIComponent(`AlignerEst™ Aligner Treatment Plan\n\nPatient: ${name}\nDate of Birth: ${state.patDOB||'—'}\n\nUpper Arch: ${uT||'—'} trays (~${uT*2} weeks)\nLower Arch: ${lT||'—'} trays (~${lT*2} weeks)\nCombined: ${combT||'—'} trays (~${combT*2} weeks)\n\nBased on 5°/tray rotation and 0.25mm/tray translation.\nThis estimate is based on visual assessment and subject to clinical review.\nAlignerEst™ is a tool by Space Maintainers Laboratories.`);
-    window.location.href=`mailto:?subject=${subject}&body=${body}`;
-  } else {
-    const msg=encodeURIComponent(`AlignerEst™ Treatment Plan for ${name}: Upper ${uT||'—'} trays, Lower ${lT||'—'} trays (~${combT*2} weeks total). Your doctor will confirm after full clinical evaluation.`);
-    window.location.href=`sms:?body=${msg}`;
+  const as=state[arch],p=as.placements.find(p=>p.id===as.selId);
+  if(p){
+    p.corrected=!p.corrected;
+    if(p.corrected){
+      // Lock in current position as the TARGET
+      // origX/Y stays where tooth IS in the photo
+      // idealX/Y = where we want it to go (currently same spot — doctor drags to correct)
+      p.idealX=p.origX;p.idealY=p.origY;
+    }
+    render();
   }
 }
-
-function bindInputs(){
-  const nameEl=document.getElementById('inp-name');
-  const dobEl=document.getElementById('inp-dob');
-  if(nameEl) nameEl.addEventListener('input',e=>{state.patName=e.target.value;document.getElementById('pat-badge').textContent=state.patName;});
-  if(dobEl)  dobEl.addEventListener('input',e=>{state.patDOB=e.target.value;});
+function correctAll(arch){state[arch].placements.forEach(p=>{if(p.placed&&!p.corrected){p.corrected=true;p.idealX=p.origX;p.idealY=p.origY;}});state[arch].selId=null;render();}
+function removeTooth(arch,id){const as=state[arch];as.placements=as.placements.filter(p=>p.id!==id);if(as.selId===id)as.selId=null;const td=arch==='upper'?UPPER_TEETH:LOWER_TEETH,idx=td.findIndex(t=>t.id===id);if(idx!==-1){as.placeIdx=idx;as.mode='place';}render();}
+function selTooth(arch,id){state[arch].selId=state[arch].selId===id?null:id;render();}
+function resetArch(arch){state[arch]=mkA();state[arch]._img=null;loadImg(arch).then(render);IS[arch]=mkI();}
+function resetCase(){state={tab:0,patName:'',patDOB:'',photos:{upper:null,lower:null,facial:null},upper:mkA(),lower:mkA()};IS.upper=mkI();IS.lower=mkI();render();}
+function shareR(method){const uT=aTrays(state.upper.placements,state.upper.ppm),lT=aTrays(state.lower.placements,state.lower.ppm),combT=Math.max(uT,lT),name=state.patName||'Patient';if(method==='Email'){window.location.href=`mailto:?subject=${encodeURIComponent('AlignerEst™ — '+name)}&body=${encodeURIComponent('Upper: '+(uT||'—')+' trays\nLower: '+(lT||'—')+' trays\nCombined: '+(combT||'—')+' trays (~'+combT*2+' weeks)\n\nAlignerEst™ by Space Maintainers Laboratories')}`;}else{window.location.href=`sms:?body=${encodeURIComponent('AlignerEst™ for '+name+': '+combT+' trays (~'+combT*2+' weeks). Doctor will confirm.')}`;}
 }
+function bindInputs(){const n=document.getElementById('inp-name'),d=document.getElementById('inp-dob');if(n)n.addEventListener('input',e=>{state.patName=e.target.value;document.getElementById('pat-badge').textContent=state.patName;});if(d)d.addEventListener('input',e=>{state.patDOB=e.target.value;});}
 
-// ── roundRect polyfill ────────────────────────────────────────
-if(!CanvasRenderingContext2D.prototype.roundRect){
-  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
-    r=Math.min(r,w/2,h/2);
-    this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);
-    this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-    this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);
-    this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);
-    this.closePath();return this;
-  };
-}
+if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){r=Math.min(r,w/2,h/2);this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();return this;};}
 
 render();
 </script>
