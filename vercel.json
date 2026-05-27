@@ -1,0 +1,6 @@
+{
+  "functions": {
+    "api/detect.js": { "memory": 512, "maxDuration": 30 },
+    "api/segment.js": { "memory": 512, "maxDuration": 30 }
+  }
+}

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>AlignerEst™ — SML Chairside Aligner Tool</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#0d1117;font-family:'DM Sans',system-ui,sans-serif;overscroll-behavior:none;color:#e2e8f0}
+input,select,button{font-family:inherit}
+button{cursor:pointer;border:none;background:none}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
+  --primary:#2ea043;--primary-dim:#1a5f2a;--accent:#58a6ff;--accent-dim:#1f3a6e;
+  --warn:#d29922;--danger:#f85149;--muted:#8b949e;
+}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.inp{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font-size:14px;color:#e2e8f0;background:var(--surface2);outline:none;transition:border-color .15s}
+.inp:focus{border-color:var(--accent)}
+.prim{background:var(--primary);color:#fff;border-radius:10px;padding:13px;font-size:15px;font-weight:700;width:100%;cursor:pointer;border:none;display:block;text-align:center;letter-spacing:.01em;transition:opacity .15s}
+.prim:disabled{opacity:.4;cursor:default}
+.prim:hover:not(:disabled){opacity:.88}
+.sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:block}
+input[type=range]{accent-color:var(--accent);width:100%;cursor:pointer}
+#app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);padding-bottom:90px}
+#header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px 0;position:sticky;top:0;z-index:20}
+#header-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#logo{width:38px;height:38px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+#title-block h1{font-size:17px;font-weight:800;color:#e2e8f0;letter-spacing:-.02em}
+#title-block p{font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+#pat-badge{font-size:12px;color:var(--accent);font-weight:600;margin-left:auto}
+#tabs{display:grid;grid-template-columns:repeat(5,1fr)}
+.tab-btn{padding:8px 2px 10px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:10px;font-weight:500;cursor:pointer;transition:color .15s,border-color .15s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+.tab-icon{font-size:15px;display:block;margin-bottom:2px}
+#content{padding:14px 14px 0}
+.canvas-wrap{position:relative;background:#000;border-radius:10px;overflow:hidden;border:1px solid var(--border);touch-action:none;user-select:none}
+.canvas-wrap canvas{display:block;width:100%;height:auto}
+.ai-status{border-radius:10px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600}
+.ai-status.loading{background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent)}
+.ai-status.done{background:#1a3a23;border:1px solid var(--primary);color:var(--primary)}
+.ai-status.err{background:#3b1e1e;border:1px solid var(--danger);color:var(--danger)}
+.ai-spinner{width:16px;height:16px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.edit-panel{padding:12px;border-top:1px solid var(--border)}
+.tooth-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tooth-chip{padding:5px 9px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:all .1s}
+.tooth-chip.placed{border-color:#2ea04366;color:var(--primary)}
+.tooth-chip.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tooth-chip.corrected{background:#1a3a23;color:var(--primary);border-color:var(--primary)}
+.slider-row{margin-bottom:8px}
+.slider-lbl{display:flex;justify-content:space-between;margin-bottom:3px;font-size:10px;color:var(--muted)}
+.nudge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px}
+.nudge-btn{padding:8px 4px;border-radius:8px;background:var(--surface2);color:#c9d1d9;font-size:11px;font-weight:700;border:1px solid var(--border);cursor:pointer}
+.nudge-btn:active{background:var(--accent-dim)}
+.stats-row{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px 10px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;margin-bottom:10px}
+.sel-actions{display:flex;gap:6px;margin-bottom:10px}
+.btn-correct{flex:1;padding:8px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;border:none;background:var(--primary-dim);color:var(--primary)}
+.btn-correct.done{background:#1a3a23;color:#56d364}
+.btn-remove{padding:8px 12px;border-radius:8px;background:#3b1e1e;color:var(--danger);font-weight:700;font-size:12px;border:1px solid #5a2020;cursor:pointer}
+.warn-box{border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:11px;font-weight:600}
+.warn-attach{background:#2d2008;color:var(--warn);border:1px solid #5a4308}
+.warn-flag{background:#3b1e1e;color:var(--danger);border:1px solid #5a2020}
+.photo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.photo-slot{cursor:pointer}
+.photo-slot-thumb{height:88px;border-radius:10px;overflow:hidden;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;position:relative;transition:border-color .15s}
+.photo-slot-thumb.filled{border-color:var(--primary)}
+.photo-slot-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-slot-check{position:absolute;top:4px;right:4px;background:var(--primary);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700}
+.photo-slot-label{font-size:10px;font-weight:600;color:#c9d1d9;margin-top:4px}
+.photo-slot-hint{font-size:9px;color:var(--muted)}
+.quote-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.quote-cell{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 6px}
+.quote-cell-label{font-size:10px;color:var(--muted);margin-bottom:3px}
+.quote-cell-val{font-size:22px;font-weight:700}
+.quote-cell-sub{font-size:9px;margin-top:2px}
+.tray-banner{background:#1a3a23;border:1px solid #2ea04366;border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.tray-rule-box{background:var(--accent-dim);border:1px solid #58a6ff44;border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:11px;color:var(--accent);line-height:1.6}
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.ba-label{font-size:9px;font-weight:700;margin-bottom:3px;color:var(--muted)}
+.ba-frame{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.ba-frame canvas{display:block;width:100%}
+.share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.share-btn{padding:12px 8px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--accent);line-height:1.5;cursor:pointer;transition:border-color .15s}
+.share-btn:hover{border-color:var(--accent)}
+.share-btn-icon{font-size:20px;margin-bottom:3px;display:block}
+.mode-strip{display:flex;border-bottom:1px solid var(--border);background:var(--surface)}
+.mode-btn{flex:1;padding:9px;background:none;color:var(--muted);font-weight:500;font-size:11px;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s}
+.mode-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+.arch-editor-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px}
+.arch-editor-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.arch-editor-title{font-weight:700;font-size:13px;color:#e2e8f0}
+.arch-editor-status{font-size:10px;color:var(--muted);margin-top:2px}
+.arch-header-badges{display:flex;gap:6px;align-items:center}
+.badge-pill{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:700}
+.tools-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:6px 10px;display:flex;align-items:center;justify-content:space-between}
+.tools-btn{font-size:10px;padding:4px 9px;border-radius:6px;background:transparent;color:var(--muted);font-weight:600;border:1px solid transparent;cursor:pointer}
+.tools-btn.active{background:var(--surface);border-color:var(--border);color:#c9d1d9}
+.tools-panel{padding:10px;border-bottom:1px solid var(--border)}
+.quick-actions{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px}
+.btn-correct-all{flex:1;padding:8px;border-radius:8px;background:#1a3a23;color:var(--primary);font-size:11px;font-weight:700;border:1px solid #2ea04344;cursor:pointer}
+.btn-reset-arch{padding:8px 14px;border-radius:8px;background:#3b1e1e;color:var(--danger);font-size:11px;font-weight:600;border:1px solid #5a2020;cursor:pointer}
+.sam-badge{display:inline-flex;align-items:center;gap:5px;background:#2d1a4a;border:1px solid #8b5cf644;border-radius:20px;padding:3px 9px;font-size:9px;color:#a78bfa;font-weight:700}
+@media print{body{background:#fff;color:#000}#header,#tabs,.tab-btn,.prim,.btn-correct-all,.btn-reset-arch,.share-grid,#new-case-btn{display:none!important}#app{padding:0}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <div id="header-top">
+      <div id="logo">🦷</div>
+      <div id="title-block"><h1>AlignerEst™</h1><p>AI Chairside Aligner Tool · SML</p></div>
+      <div id="pat-badge"></div>
+    </div>
+    <div id="tabs">
+      <button class="tab-btn active" onclick="setTab(0)"><span class="tab-icon">📷</span>Photos</button>
+      <button class="tab-btn" onclick="setTab(1)"><span class="tab-icon">⬆️</span>Upper</button>
+      <button class="tab-btn" onclick="setTab(2)"><span class="tab-icon">⬇️</span>Lower</button>
+      <button class="tab-btn" onclick="setTab(3)"><span class="tab-icon">💰</span>Quote</button>
+      <button class="tab-btn" onclick="setTab(4)"><span class="tab-icon">📋</span>Report</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+<script>
+// ── Constants ──────────────────────────────────────────────────
+const PRICE_PER_TRAY=65,LAB_FEE=225,MARKUP=1.4;
+const CANVAS_W=680,CANVAS_H=520;
+const ROT_MAX=30,ROT_WARN=20,ROT_FLAG=25,ROT_ATTACH=18;
+const DEG_PER_TRAY=5,MM_PER_TRAY=0.25;
+
+const UPPER_TEETH=[
+  {id:6,label:'#6',name:'UR Canine',widthMm:7.5,heightMm:9.6},
+  {id:7,label:'#7',name:'UR Lateral',widthMm:6.5,heightMm:8.3},
+  {id:8,label:'#8',name:'UR Central',widthMm:8.5,heightMm:10.9},
+  {id:9,label:'#9',name:'UL Central',widthMm:8.5,heightMm:10.9},
+  {id:10,label:'#10',name:'UL Lateral',widthMm:6.5,heightMm:8.3},
+  {id:11,label:'#11',name:'UL Canine',widthMm:7.5,heightMm:9.6},
+];
+const LOWER_TEETH=[
+  {id:22,label:'#22',name:'LL Canine',widthMm:6.5,heightMm:8.3},
+  {id:23,label:'#23',name:'LL Lateral',widthMm:6.0,heightMm:7.7},
+  {id:24,label:'#24',name:'LL Central',widthMm:5.5,heightMm:7.1},
+  {id:25,label:'#25',name:'LR Central',widthMm:5.5,heightMm:7.1},
+  {id:26,label:'#26',name:'LR Lateral',widthMm:6.0,heightMm:7.7},
+  {id:27,label:'#27',name:'LR Canine',widthMm:6.5,heightMm:8.3},
+];
+
+let state={tab:0,patName:'',patDOB:'',photos:{upper:null,lower:null,facial:null},upper:mkArchState(),lower:mkArchState()};
+function mkArchState(){return{placements:[],ppm:null,mode:'place',placeIdx:0,selId:null,showTools:false,brightness:100,contrast:100,saturation:100,zoom:1,panX:0,panY:0,aiStatus:null,samStatus:null,aiMsg:'',samMsg:'',_img:null,gumColor:null};}
+const istate={upper:mkIState(),lower:mkIState()};
+function mkIState(){return{isPanning:false,lastTouch:null,pinchDist:null,calibStep:0,calibPt1:null,drag:null,rotHandle:null};}
+
+function toothTrays(p,ppm){if(!p.corrected||!p.placed)return 0;const sc=ppm||6,dx=(p.x-p.idealX)/sc,dy=(p.y-p.idealY)/sc,t=Math.sqrt(dx*dx+dy*dy)/MM_PER_TRAY,r=Math.abs(p.rot||0)/DEG_PER_TRAY,tot=Math.max(t,r);if(tot===0)return 0;if(tot<1)return 1;return Math.ceil(tot);}
+function archTrays(pl,ppm){if(!pl.length)return 0;return Math.max(0,...pl.map(t=>toothTrays(t,ppm)));}
+function complexity(t){if(t===0)return{label:'—',color:'#8b949e'};if(t<=4)return{label:'Simple',color:'#2ea043'};if(t<=10)return{label:'Moderate',color:'#d29922'};return{label:'Complex',color:'#f85149'};}
+function rotColor(rot){const r=Math.abs(rot||0);if(r>=ROT_MAX)return'#f85149';if(r>=ROT_FLAG)return'#e05f40';if(r>=ROT_ATTACH)return'#d29922';if(r>=ROT_WARN)return'#ca8a04';return null;}
+function labCost(t){return t*PRICE_PER_TRAY+LAB_FEE;}
+function drCost(t){return Math.round(labCost(t)*MARKUP/5)*5;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── AI Detection — calls /api/detect (Vercel function) ─────────
+async function runAIDetection(arch){
+  const photo=state.photos[arch];if(!photo)return;
+  const as=state[arch];
+  as.aiStatus='loading';as.aiMsg='Claude Vision is locating teeth…';as.samStatus=null;as.samMsg='';
+  render();
+  try{
+    const b64=photo.includes(',')?photo.split(',')[1]:photo;
+    const mediaType=photo.startsWith('data:image/png')?'image/png':'image/jpeg';
+    const resp=await fetch('/api/detect',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({imageBase64:b64,imageType:mediaType,arch})
+    });
+    const parsed=await resp.json();
+    if(!resp.ok)throw new Error(parsed.error||'Detection failed');
+    const teethDefs=arch==='upper'?UPPER_TEETH:LOWER_TEETH;
+    as.ppm=parsed.ppm?(parsed.ppm*CANVAS_W/1000):6;
+    as.placements=[];
+    for(const t of parsed.teeth){
+      if(!t.visible)continue;
+      const def=teethDefs.find(d=>d.id===t.id);if(!def)continue;
+      const ppm=as.ppm||6,x=t.cx*CANVAS_W,y=t.cy*CANVAS_H;
+      as.placements.push({id:def.id,label:def.label,name:def.name,widthMm:def.widthMm,heightMm:def.heightMm,x,y,idealX:x,idealY:y,wPx:def.widthMm*ppm,hPx:def.heightMm*ppm,rot:0,corrected:false,placed:true,polygon:null});
+    }
+    as.placeIdx=as.placements.length;as.mode='edit';
+    as.aiStatus='done';as.aiMsg=`Found ${as.placements.length} teeth — segmenting with SAM…`;
+    render();
+    await runSAMSegmentation(arch,photo);
+  }catch(err){
+    as.aiStatus='error';as.aiMsg='Detection failed: '+err.message+'. Place teeth manually.';render();
+  }
+}
+
+// ── SAM Segmentation — calls /api/segment (Vercel function) ───
+async function runSAMSegmentation(arch,photoDataUrl){
+  const as=state[arch];if(!as.placements.length)return;
+  as.samStatus='loading';as.samMsg=`Segmenting ${as.placements.length} teeth…`;render();
+  const b64=photoDataUrl.includes(',')?photoDataUrl.split(',')[1]:photoDataUrl;
+  let ok=0,fb=0;
+  for(const p of as.placements){
+    try{
+      const resp=await fetch('/api/segment',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({imageBase64:b64,cx:p.x/CANVAS_W,cy:p.y/CANVAS_H,imageId:`${arch}_${p.id}_${Date.now()}`})
+      });
+      const data=await resp.json();
+      if(data.polygon&&data.polygon.length>2){
+        p.polygon=data.polygon.map(([fx,fy])=>[fx*CANVAS_W,fy*CANVAS_H]);ok++;
+      }else{p.polygon=buildBbox(p);fb++;}
+    }catch{p.polygon=buildBbox(p);fb++;}
+    const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');
+  }
+  as.samStatus='done';
+  as.samMsg=ok>0?`✓ ${ok} polygon cutouts active${fb>0?`, ${fb} bbox fallback`:''}`:'Using bounding box clips (add Roboflow key for polygons)';
+  render();
+}
+
+function buildBbox(p){const w=p.wPx||20,h=p.hPx||28,r=3,cx=p.x,cy=p.y,l=cx-w/2,t=cy-h/2,ri=cx+w/2,b=cy+h/2;return[[l+r,t],[ri-r,t],[ri,t+r],[ri,b-r],[ri-r,b],[l+r,b],[l,b-r],[l,t+r]];}
+function translatePoly(poly,dx,dy){if(!poly)return null;return poly.map(([x,y])=>[x+dx,y+dy]);}
+function rotatePoly(poly,cx,cy,deg){if(!poly)return null;const rad=deg*Math.PI/180,cos=Math.cos(rad),sin=Math.sin(rad);return poly.map(([x,y])=>{const dx=x-cx,dy=y-cy;return[cx+dx*cos-dy*sin,cy+dx*sin+dy*cos];});}
+function applyPolyPath(ctx,poly){if(!poly||poly.length<3)return false;ctx.beginPath();ctx.moveTo(poly[0][0],poly[0][1]);for(let i=1;i<poly.length;i++)ctx.lineTo(poly[i][0],poly[i][1]);ctx.closePath();return true;}
+
+// ── Canvas ─────────────────────────────────────────────────────
+function getArchCanvas(arch){return document.getElementById('canvas-main-'+arch);}
+
+function sampleGumColor(ctx,placements){
+  const w=CANVAS_W,h=CANVAS_H;let r=0,g=0,b=0,n=0;
+  for(const[sx,sy] of[[20,20],[w-20,20],[w/2,h-20],[20,h-20]]){
+    if(!placements.some(p=>Math.hypot(p.x-sx,p.y-sy)<30)){const d=ctx.getImageData(sx,sy,1,1).data;r+=d[0];g+=d[1];b+=d[2];n++;}
+  }
+  return n?{r:Math.round(r/n),g:Math.round(g/n),b:Math.round(b/n)}:{r:180,g:120,b:120};
+}
+
+function drawArchCanvas(arch,canvas,mode='live'){
+  const as=state[arch],photo=state.photos[arch],ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  if(photo&&as._img){ctx.filter=`brightness(${as.brightness}%) contrast(${as.contrast}%) saturate(${as.saturation}%)`;ctx.drawImage(as._img,0,0,W,H);ctx.filter='none';}
+  else{ctx.fillStyle='#0d1117';ctx.fillRect(0,0,W,H);ctx.fillStyle='#8b949e';ctx.font='bold 14px system-ui';ctx.textAlign='center';ctx.fillText('Upload photo',W/2,H/2);}
+  const ppm=as.ppm||6,placements=as.placements.filter(p=>p.placed);
+  if(mode==='before'){for(const p of placements)drawOutline(ctx,p,p.x,p.y,p.rot||0,'before',false,p,ppm);return;}
+  if(mode==='after'){for(const p of placements){if(!p.corrected)continue;drawOutline(ctx,p,p.idealX,p.idealY,0,'after',false,p,ppm);}return;}
+  if(photo&&as._img){
+    const gum=as.gumColor||sampleGumColor(ctx,placements);as.gumColor=gum;
+    for(const p of placements){
+      if(!p.corrected)continue;
+      const moved=Math.hypot(p.x-p.idealX,p.y-p.idealY)>3||Math.abs(p.rot||0)>1;if(!moved)continue;
+      ctx.save();ctx.globalAlpha=0.88;
+      if(p.polygon&&applyPolyPath(ctx,p.polygon)){ctx.fillStyle=`rgb(${gum.r},${gum.g},${gum.b})`;ctx.fill();}
+      else{const grd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,Math.max(p.wPx,p.hPx)*0.55);grd.addColorStop(0,`rgb(${gum.r},${gum.g},${gum.b})`);grd.addColorStop(1,`rgba(${gum.r},${gum.g},${gum.b},0)`);ctx.fillStyle=grd;ctx.beginPath();ctx.ellipse(p.x,p.y,(p.wPx||20)*0.6,(p.hPx||28)*0.6,0,0,Math.PI*2);ctx.fill();}
+      ctx.globalAlpha=1;ctx.restore();
+    }
+    for(const p of placements)drawSprite(ctx,as._img,p,as);
+  }
+  for(const p of placements)drawOutline(ctx,p,p.corrected?p.idealX:p.x,p.corrected?p.idealY:p.y,p.corrected?0:(p.rot||0),'live',as.selId===p.id,p,ppm);
+  const sel=placements.find(p=>p.id===as.selId);
+  if(sel&&sel.corrected&&(Math.hypot(sel.x-sel.idealX,sel.y-sel.idealY)>4||Math.abs(sel.rot)>1)){ctx.save();ctx.strokeStyle='#2ea043';ctx.lineWidth=1.5;ctx.setLineDash([3,3]);ctx.globalAlpha=0.7;ctx.beginPath();ctx.moveTo(sel.x,sel.y);ctx.lineTo(sel.idealX,sel.idealY);ctx.stroke();ctx.restore();}
+  if(as.mode==='place'){const td=arch==='upper'?UPPER_TEETH:LOWER_TEETH,next=td[as.placeIdx];if(next){ctx.save();ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(0,H-28,W,28);ctx.fillStyle='#fbbf24';ctx.font='bold 11px system-ui';ctx.textAlign='center';ctx.fillText(`👆 Tap to place ${next.label} — ${next.name}`,W/2,H-10);ctx.restore();}}
+  const is=istate[arch];if(as.mode==='calib'&&is.calibPt1){ctx.save();ctx.fillStyle='#fbbf24';ctx.beginPath();ctx.arc(is.calibPt1.x,is.calibPt1.y,6,0,Math.PI*2);ctx.fill();ctx.restore();}
+  if(as.zoom>1){ctx.save();ctx.fillStyle='rgba(0,0,0,0.6)';ctx.beginPath();ctx.roundRect(W-56,4,52,18,5);ctx.fill();ctx.fillStyle='#58a6ff';ctx.font='bold 10px system-ui';ctx.textAlign='center';ctx.fillText(`${as.zoom.toFixed(1)}x`,W-30,17);ctx.restore();}
+}
+
+function drawSprite(ctx,img,p,as){
+  const isC=p.corrected,dx=isC?p.idealX:p.x,dy=isC?p.idealY:p.y,drot=isC?0:(p.rot||0),w=p.wPx||20,h=p.hPx||28;
+  ctx.save();
+  if(p.polygon&&p.polygon.length>2){
+    let poly=p.polygon;
+    if(isC){poly=translatePoly(poly,p.idealX-p.x,p.idealY-p.y);if(Math.abs(p.rot||0)>0.5)poly=rotatePoly(poly,p.idealX,p.idealY,-(p.rot||0));}
+    if(applyPolyPath(ctx,poly))ctx.clip();
+  }else{ctx.translate(dx,dy);ctx.rotate(drot*Math.PI/180);ctx.beginPath();ctx.roundRect(-w/2,-h/2,w,h,3);ctx.clip();ctx.translate(-dx,-dy);}
+  ctx.translate(dx,dy);ctx.rotate(drot*Math.PI/180);
+  ctx.filter=`brightness(${as.brightness}%) contrast(${as.contrast}%) saturate(${as.saturation}%)`;
+  ctx.drawImage(img,p.x-w/2,p.y-h/2,w,h,-w/2,-h/2,w,h);
+  ctx.filter='none';ctx.restore();
+}
+
+function drawOutline(ctx,p,cx,cy,rot,mode,isSel,tooth,ppm){
+  const w=tooth.wPx||20,h=tooth.hPx||28,rc=rotColor(tooth.rot);
+  let stroke,fill,lw;
+  if(mode==='before'){stroke='#f85149';fill='rgba(248,81,73,0.18)';lw=1.8;}
+  else if(mode==='after'){stroke='#2ea043';fill='rgba(46,160,67,0.18)';lw=1.8;}
+  else{stroke=isSel?'#58a6ff':rc||( tooth.corrected?'#2ea043':'rgba(203,213,225,0.7)');fill=isSel?'rgba(88,166,255,0.18)':tooth.corrected?'rgba(46,160,67,0.12)':'rgba(33,38,45,0.45)';lw=isSel?2.5:1.8;}
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(rot*Math.PI/180);ctx.beginPath();ctx.roundRect(-w/2,-h/2,w,h,3);ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();
+  ctx.font='bold 7px monospace';ctx.fillStyle=isSel?'#58a6ff':tooth.corrected?'#56d364':'#8b949e';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(tooth.label,0,0);
+  if(tooth.corrected&&mode==='live'){const tr=toothTrays(tooth,ppm);if(tr>0){ctx.font='bold 7px monospace';ctx.fillStyle='#58a6ff';ctx.fillText(tr+'t',0,-h/2-6);}}
+  if(isSel){ctx.beginPath();ctx.roundRect(-w/2-4,-h/2-4,w+8,h+8,5);ctx.strokeStyle='rgba(88,166,255,0.4)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#58a6ff';ctx.beginPath();ctx.arc(0,-h/2-12,5,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(88,166,255,0.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,-h/2-7);ctx.lineTo(0,-h/2);ctx.stroke();}
+  ctx.restore();
+  if(rc&&mode==='live'){ctx.save();ctx.translate(cx+w/2-2,cy-h/2+2);ctx.fillStyle=rc;ctx.beginPath();ctx.arc(0,0,3.5,0,Math.PI*2);ctx.fill();ctx.restore();}
+}
+
+function loadArchImage(arch){const photo=state.photos[arch],as=state[arch];if(!photo){as._img=null;return Promise.resolve();}return new Promise(res=>{const img=new Image();img.onload=()=>{as._img=img;res();};img.src=photo;});}
+
+// ── Render ─────────────────────────────────────────────────────
+function render(){
+  document.getElementById('pat-badge').textContent=state.patName||'';
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===state.tab));
+  const c=document.getElementById('content');c.innerHTML='';
+  if(state.tab===0)c.appendChild(renderPhotosTab());
+  else if(state.tab===1)c.appendChild(renderArchTab('upper'));
+  else if(state.tab===2)c.appendChild(renderArchTab('lower'));
+  else if(state.tab===3)c.appendChild(renderQuoteTab());
+  else if(state.tab===4)c.appendChild(renderReportTab());
+  bindInputs();
+  setTimeout(()=>{['upper','lower'].forEach(arch=>{const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');});bindCanvasEvents();},0);
+}
+
+function renderPhotosTab(){
+  const div=document.createElement('div');
+  div.innerHTML=`
+    <div class="card"><span class="sec-label">Patient Info</span>
+      <div style="margin-bottom:10px"><label class="sec-label">Name</label><input class="inp" id="inp-name" value="${esc(state.patName)}" placeholder="Full name"/></div>
+      <div><label class="sec-label">Date of Birth</label><input class="inp" id="inp-dob" value="${esc(state.patDOB)}" placeholder="MM/DD/YYYY"/></div>
+    </div>
+    <div class="card"><span class="sec-label">Upload 3 Photos</span>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6">Take or upload intraoral photos. AI auto-detects and segments each tooth.</div>
+      <div class="photo-grid">
+        ${renderPhotoSlot('upper','⬆️','Upper Arch','Straight down, mouth open')}
+        ${renderPhotoSlot('lower','⬇️','Lower Arch','Straight down, tongue back')}
+        ${renderPhotoSlot('facial','😬','Facial View','Lips retracted, camera level')}
+      </div>
+    </div>
+    <div style="background:var(--accent-dim);border:1px solid var(--accent);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px">🤖 Two-AI Pipeline</div>
+      <div style="font-size:11px;color:#8fb8e8;line-height:1.7"><strong>Step 1 — Claude Vision:</strong> Finds each tooth by number.<br><strong>Step 2 — SAM:</strong> Cuts the exact polygon outline of each tooth.<br><span style="color:var(--muted)">Drag a tooth → real pixels move to the corrected position.</span></div>
+    </div>
+    <div class="tray-rule-box"><strong>📐 Tray Math:</strong> Each tray corrects up to <strong>5° rotation</strong> or <strong>0.25mm translation</strong>.</div>
+    <button class="prim" onclick="setTab(1)">Go to Upper Arch →</button>
+    <div style="height:8px"></div>`;
+  ['upper','lower','facial'].forEach(id=>{
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.capture='environment';inp.style.display='none';inp.id='file-'+id;inp.addEventListener('change',e=>handlePhoto(id,e));div.appendChild(inp);
+  });
+  return div;
+}
+
+function renderPhotoSlot(id,icon,label,hint){
+  const photo=state.photos[id];
+  return `<div class="photo-slot" onclick="document.getElementById('file-${id}').click()">
+    <div class="photo-slot-thumb ${photo?'filled':''}">
+      ${photo?`<img src="${photo}" alt="${label}"/><div class="photo-slot-check">✓</div>`:`<div style="text-align:center"><div style="font-size:22px;margin-bottom:2px">${icon}</div><div style="font-size:9px;color:var(--muted)">Tap</div></div>`}
+    </div>
+    <div class="photo-slot-label">${label}</div><div class="photo-slot-hint">${hint}</div>
+  </div>`;
+}
+
+function handlePhoto(id,e){
+  const f=e.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    state.photos[id]=ev.target.result;
+    if(id==='upper'||id==='lower'){state[id].aiStatus=null;state[id].aiMsg='';state[id].samStatus=null;state[id].samMsg='';state[id].gumColor=null;state[id]._img=null;loadArchImage(id).then(render);}
+    else render();
+  };
+  reader.readAsDataURL(f);
+}
+
+function renderArchTab(arch){
+  const td=arch==='upper'?UPPER_TEETH:LOWER_TEETH,as=state[arch],photo=state.photos[arch];
+  const placed=as.placements.filter(p=>p.placed),corrected=as.placements.filter(p=>p.corrected);
+  const trayCount=archTrays(as.placements,as.ppm),sel=as.placements.find(p=>p.id===as.selId),cx=complexity(trayCount);
+  let st='';
+  if(as.mode==='calib')st=`📐 Calibration step ${istate[arch].calibStep+1}/2`;
+  else if(as.mode==='place'){const nx=td[as.placeIdx];st=nx?`👆 Tap: ${nx.label} — ${nx.name} (${as.placeIdx+1}/${td.length})`:'All placed';}
+  else st=`${placed.length}/${td.length} placed · ${corrected.length} corrected`;
+  const div=document.createElement('div');
+  div.innerHTML=`
+    ${!photo?`<div class="card" style="text-align:center;padding:20px"><div style="font-size:32px;margin-bottom:8px">📷</div><div style="font-size:13px;color:var(--muted)">Upload the ${arch} arch photo first.</div><button class="prim" style="margin-top:12px;width:auto;padding:10px 20px" onclick="setTab(0)">Upload Photo →</button></div>`:''}
+    ${photo&&as.aiStatus===null?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px"><div><div style="font-size:12px;color:var(--muted);font-weight:600">🤖 Auto-detect &amp; segment teeth</div><div style="font-size:10px;color:#6e7681;margin-top:2px">Claude Vision → SAM polygons</div></div><button onclick="runAIDetection('${arch}')" style="padding:7px 14px;border-radius:8px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;border:none;cursor:pointer;flex-shrink:0">Analyze with AI</button></div>`:''}
+    ${as.aiStatus?`<div class="ai-status ${as.aiStatus==='error'?'err':as.samStatus==='done'?'done':'loading'}">
+      ${as.aiStatus==='loading'||as.samStatus==='loading'?'<div class="ai-spinner"></div>':'<span>'+(as.aiStatus==='error'?'✕':'✓')+'</span>'}
+      <div><div>${esc(as.aiMsg)}</div>${as.samMsg?`<div style="font-size:10px;color:#a78bfa;margin-top:2px">🔮 ${esc(as.samMsg)}</div>`:''}</div>
+    </div>`:''}
+    <div class="arch-editor-card">
+      <div class="arch-editor-header">
+        <div><div class="arch-editor-title">${arch==='upper'?'Upper':'Lower'} Arch</div><div class="arch-editor-status">${st}</div></div>
+        <div class="arch-header-badges">
+          ${as.mode==='edit'&&!as.ppm?`<button style="font-size:10px;padding:4px 9px;border-radius:6px;background:#2d2008;color:var(--warn);font-weight:700;border:1px solid #5a4308;cursor:pointer" onclick="startCalib('${arch}')">📐 Calibrate</button>`:''}
+          ${as.ppm?`<div class="badge-pill" style="background:#1a3a23;color:var(--primary);border:1px solid #2ea04344">${as.ppm.toFixed(1)}px/mm</div>`:''}
+          ${trayCount>0?`<div class="badge-pill" style="background:${cx.color}22;color:${cx.color};border:1px solid ${cx.color}44">${trayCount}t</div>`:''}
+        </div>
+      </div>
+      <div class="tools-bar">
+        <button class="tools-btn ${as.showTools?'active':''}" onclick="togglePhotoTools('${arch}')">🎨 Photo tools ${as.showTools?'▲':'▼'}</button>
+        <div>${as.zoom>1?`<button onclick="resetZoom('${arch}')" style="font-size:10px;padding:4px 9px;border-radius:6px;background:var(--accent);color:#fff;font-weight:700;border:none;cursor:pointer">Reset ${as.zoom.toFixed(1)}x</button>`:`<span style="font-size:10px;color:var(--muted)">Pinch to zoom</span>`}</div>
+      </div>
+      ${as.showTools?`<div class="tools-panel">${renderSlider(arch,'brightness','☀️ Brightness',50,200)}${renderSlider(arch,'contrast','◑ Contrast',50,200)}${renderSlider(arch,'saturation','🎨 Saturation',0,200)}<button onclick="resetPhoto('${arch}')" style="font-size:10px;padding:4px 10px;border-radius:6px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);cursor:pointer;margin-top:4px">Reset</button></div>`:''}
+      <div class="canvas-wrap" style="aspect-ratio:${CANVAS_W}/${CANVAS_H}"><canvas id="canvas-main-${arch}" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;height:100%;display:block"></canvas></div>
+      ${as.mode!=='calib'?`<div class="mode-strip"><button class="mode-btn ${as.mode==='place'?'active':''}" onclick="setArchMode('${arch}','place')">👆 Place</button><button class="mode-btn ${as.mode==='edit'?'active':''}" onclick="setArchMode('${arch}','edit')">✏️ Edit</button></div>`:''}
+      ${as.mode==='place'?`<div style="padding:10px 12px"><div class="sec-label">Tap each tooth in order:</div><div class="tooth-row">${td.map((t,i)=>{const p=as.placements.find(p=>p.id===t.id&&p.placed),ic=i===as.placeIdx;return`<div class="tooth-chip ${p?'placed':''} ${ic&&!p?'sel':''}" onclick="jumpToTooth('${arch}',${i})">${p?'✓':''}${t.label}</div>`;}).join('')}</div>${placed.length>0?`<button onclick="setArchMode('${arch}','edit')" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;background:var(--accent-dim);color:var(--accent);font-weight:700;font-size:12px;border:1px solid var(--accent);cursor:pointer">Done → Edit</button>`:''}</div>`:''}
+      ${as.mode==='edit'?renderEditPanel(arch,sel):''}
+      ${as.mode==='calib'?`<div style="padding:10px 12px;font-size:11px;color:var(--warn);line-height:1.6">Tap <strong>mesial</strong> then <strong>distal</strong> edge of central incisor to calibrate.<button onclick="cancelCalib('${arch}')" style="display:block;margin-top:8px;width:100%;padding:8px;border-radius:8px;background:var(--surface2);color:var(--muted);font-size:11px;font-weight:600;border:1px solid var(--border);cursor:pointer">Cancel</button></div>`:''}
+      <div class="quick-actions"><button class="btn-correct-all" onclick="correctAll('${arch}')">✓ Correct All</button><button class="btn-reset-arch" onclick="resetArch('${arch}')">Reset</button></div>
+    </div>
+    ${trayCount>0?`<div class="tray-banner"><div><div style="font-size:13px;font-weight:700;color:var(--primary)">${arch==='upper'?'Upper':'Lower'} estimate</div><div style="font-size:11px;color:#56d364;margin-top:2px">${cx.label} · ~${trayCount*2} weeks</div></div><div style="font-size:28px;font-weight:800;color:var(--primary)">${trayCount}<span style="font-size:13px"> trays</span></div></div><div class="tray-rule-box" style="font-size:10px">⚙️ 1 tray per 5° rotation, 1 tray per 0.25mm translation.</div>`:''}
+    <button class="prim" onclick="setTab(${arch==='upper'?2:3})">${arch==='upper'?'Continue to Lower Arch →':'View Quote →'}</button>
+    <div style="height:8px"></div>`;
+  return div;
+}
+
+function renderSlider(arch,prop,label,min,max){const val=state[arch][prop];return`<div class="slider-row"><div class="slider-lbl"><span>${label}</span><span style="font-family:monospace">${val}%</span></div><input type="range" min="${min}" max="${max}" step="5" value="${val}" oninput="updateProp('${arch}','${prop}',+this.value)"/></div>`;}
+
+function renderEditPanel(arch,sel){
+  const as=state[arch],ppm=as.ppm||6;
+  if(!sel)return`<div class="edit-panel"><div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0">Tap a tooth to select and adjust</div>${renderChips(arch)}</div>`;
+  const st=toothTrays(sel,ppm),rc=rotColor(sel.rot),movMm=Math.sqrt(Math.pow((sel.x-sel.idealX)/ppm,2)+Math.pow((sel.y-sel.idealY)/ppm,2)).toFixed(1),rot=sel.rot||0;
+  return`<div class="edit-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div><span style="font-weight:700;font-size:13px">${sel.name}</span><span style="font-size:10px;color:var(--muted);margin-left:5px">${sel.widthMm}mm</span>${st>0?`<span style="font-size:11px;background:var(--accent-dim);color:var(--accent);padding:2px 7px;border-radius:8px;margin-left:6px;font-weight:700">${st}t</span>`:''}</div>
+      <span class="sam-badge">${sel.polygon&&sel.polygon.length>4?'✦ polygon':'rect'}</span>
+    </div>
+    ${Math.abs(rot)>=ROT_ATTACH&&Math.abs(rot)<ROT_MAX?`<div class="warn-box warn-attach">📎 ${Math.abs(rot).toFixed(0)}° — attachment recommended</div>`:''}
+    ${Math.abs(rot)>=ROT_FLAG?`<div class="warn-box warn-flag">⚠ ${Math.abs(rot).toFixed(0)}° — verify bite</div>`:''}
+    <div class="sel-actions">
+      <button class="btn-correct ${sel.corrected?'done':''}" onclick="markCorrected('${arch}')">${sel.corrected?'✓ Corrected':'Mark Corrected'}</button>
+      <button class="btn-remove" onclick="removeTooth('${arch}',${sel.id})">✕</button>
+    </div>
+    <div class="slider-row">
+      <div class="slider-lbl"><span style="color:var(--muted);font-weight:600">↻ Rotation</span><span class="rot-display" style="font-family:monospace;color:${rc||'var(--accent)'};font-weight:700">${rot>0?'+':''}${rot.toFixed(1)}°${Math.abs(rot)>=ROT_MAX?' 🛑':''}</span></div>
+      <input type="range" min="-${ROT_MAX}" max="${ROT_MAX}" step="0.5" value="${rot}" style="accent-color:${rc||'#58a6ff'}" oninput="setRot('${arch}',${sel.id},+this.value)"/>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:#30363d;margin-top:2px"><span>-${ROT_MAX}° mesial</span><span>0° ideal</span><span>+${ROT_MAX}° distal</span></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:6px">↔ Nudge position</div>
+    <div class="nudge-grid">
+      <button class="nudge-btn" onclick="adjPos('${arch}',${sel.id},-3,0)">← M</button>
+      <button class="nudge-btn" onclick="adjPos('${arch}',${sel.id},3,0)">D →</button>
+      <button class="nudge-btn" onclick="adjPos('${arch}',${sel.id},0,-3)">↑</button>
+      <button class="nudge-btn" onclick="adjPos('${arch}',${sel.id},0,3)">↓</button>
+    </div>
+    <div class="stats-row">
+      <div><div style="font-size:13px;font-weight:700;color:${rc||'#e2e8f0'}">${Math.abs(rot).toFixed(1)}°</div><div style="font-size:9px;color:var(--muted)">rotation</div></div>
+      <div><div style="font-size:13px;font-weight:700">${movMm}mm</div><div style="font-size:9px;color:var(--muted)">translation</div></div>
+      <div><div style="font-size:13px;font-weight:700;color:var(--accent)">${st}</div><div style="font-size:9px;color:var(--muted)">trays</div></div>
+    </div>
+    ${renderChips(arch)}</div>`;
+}
+
+function renderChips(arch){const as=state[arch],pl=as.placements.filter(p=>p.placed).sort((a,b)=>a.id-b.id);if(!pl.length)return'';return`<div class="tooth-row" style="margin-top:8px">${pl.map(p=>{const t=toothTrays(p,as.ppm||6);return`<div class="tooth-chip ${as.selId===p.id?'sel':''} ${p.corrected?'corrected':''}" onclick="selectTooth('${arch}',${p.id})">${p.label}${t>0?` ${t}t`:''}</div>`;}).join('')}</div>`;}
+
+function renderQuoteTab(){
+  const uT=archTrays(state.upper.placements,state.upper.ppm),lT=archTrays(state.lower.placements,state.lower.ppm),combT=Math.max(uT,lT);
+  const div=document.createElement('div');
+  div.innerHTML=`
+    <div style="background:#2d2008;border:1px solid #5a4308;border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px"><span style="font-size:20px">🔒</span><div style="font-size:12px;color:var(--warn);font-weight:600">Doctor view only</div></div>
+    <div class="card"><span class="sec-label">Case Summary</span>${state.patName?`<div style="font-size:13px;font-weight:600;margin-bottom:10px">${esc(state.patName)} · ${esc(state.patDOB)}</div>`:''}<div class="quote-grid">${renderQCell('Upper',uT,complexity(uT).color)}${renderQCell('Lower',lT,complexity(lT).color)}${renderQCell('Combined',combT,'var(--accent)')}</div></div>
+    <div class="card"><span class="sec-label">Your Lab Cost</span>
+      ${uT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span>Upper (${uT}t)</span><span style="font-weight:700">$${labCost(uT).toLocaleString()}</span></div>`:''}
+      ${lT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span>Lower (${lT}t)</span><span style="font-weight:700">$${labCost(lT).toLocaleString()}</span></div>`:''}
+      ${uT===0&&lT===0?'<div style="color:var(--muted);font-size:13px">Complete arch mapping first.</div>':''}
+    </div>
+    <div class="card"><span class="sec-label">Suggested Patient Charge (×${MARKUP})</span>
+      ${uT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span>Upper</span><span style="font-weight:700;color:var(--primary)">$${drCost(uT).toLocaleString()}</span></div>`:''}
+      ${lT>0?`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span>Lower</span><span style="font-weight:700;color:var(--primary)">$${drCost(lT).toLocaleString()}</span></div>`:''}
+      ${uT>0&&lT>0?`<div style="border-top:1px solid var(--border);padding-top:10px;display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:var(--primary)"><span>Combined</span><span>$${drCost(combT).toLocaleString()}</span></div>`:''}
+    </div>
+    <button class="prim" onclick="setTab(4)">Generate Patient Report →</button><div style="height:8px"></div>`;
+  return div;
+}
+function renderQCell(label,val,color){const c=complexity(val);return`<div class="quote-cell"><div class="quote-cell-label">${label}</div><div class="quote-cell-val" style="color:${color}">${val||'—'}</div>${val?`<div class="quote-cell-sub" style="color:${c.color}">${c.label}</div>`:''}</div>`;}
+
+function renderReportTab(){
+  const uT=archTrays(state.upper.placements,state.upper.ppm),lT=archTrays(state.lower.placements,state.lower.ppm),combT=Math.max(uT,lT);
+  const up=state.upper.placements.filter(p=>p.placed),lp=state.lower.placements.filter(p=>p.placed);
+  const div=document.createElement('div');
+  div.innerHTML=`
+    <div class="card" style="text-align:center;padding:22px 16px;background:linear-gradient(135deg,var(--surface),#1a3a23)"><div style="font-size:36px;margin-bottom:10px">🦷</div><div style="font-weight:800;font-size:20px;margin-bottom:4px">${esc(state.patName)||'Your Smile Plan'}</div><div style="font-size:12px;color:var(--muted)">AlignerEst™ Treatment Preview</div></div>
+    ${state.photos.facial?`<div class="card" style="padding:10px"><span class="sec-label">Your Current Smile</span><img src="${state.photos.facial}" alt="smile" style="width:100%;border-radius:8px;max-height:180px;object-fit:cover;display:block"/></div>`:''}
+    ${(up.length||lp.length)?`<div class="card" style="padding:12px"><span class="sec-label">Before &amp; After</span><div class="ba-grid">${up.length?`<div><div class="ba-label" style="color:var(--danger)">🔴 BEFORE — Upper</div><div class="ba-frame"><canvas id="ba-canvas-upper-before" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;display:block"></canvas></div></div>`:''} ${up.length?`<div><div class="ba-label" style="color:var(--primary)">✅ AFTER — Upper</div><div class="ba-frame"><canvas id="ba-canvas-upper-after" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;display:block"></canvas></div></div>`:''} ${lp.length?`<div><div class="ba-label" style="color:var(--danger)">🔴 BEFORE — Lower</div><div class="ba-frame"><canvas id="ba-canvas-lower-before" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;display:block"></canvas></div></div>`:''} ${lp.length?`<div><div class="ba-label" style="color:var(--primary)">✅ AFTER — Lower</div><div class="ba-frame"><canvas id="ba-canvas-lower-after" width="${CANVAS_W}" height="${CANVAS_H}" style="width:100%;display:block"></canvas></div></div>`:''}</div></div>`:''}
+    <div class="card"><span class="sec-label">Treatment Plan</span>
+      <div style="display:grid;grid-template-columns:${uT>0&&lT>0?'1fr 1fr':'1fr'};gap:8px;margin-bottom:10px">
+        ${uT>0?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center"><div style="font-size:10px;color:var(--muted);margin-bottom:3px">Upper Arch</div><div style="font-size:26px;font-weight:800">${uT}</div><div style="font-size:11px;color:var(--muted)">trays · ~${uT*2} weeks</div></div>`:''}
+        ${lT>0?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center"><div style="font-size:10px;color:var(--muted);margin-bottom:3px">Lower Arch</div><div style="font-size:26px;font-weight:800">${lT}</div><div style="font-size:11px;color:var(--muted)">trays · ~${lT*2} weeks</div></div>`:''}
+      </div>
+      ${uT>0&&lT>0?`<div style="background:linear-gradient(135deg,var(--accent-dim),#1a3a23);border:1px solid var(--accent);border-radius:10px;padding:13px;text-align:center"><div style="font-size:10px;color:var(--accent);margin-bottom:3px">Combined</div><div style="font-size:22px;font-weight:800;color:var(--accent)">${combT} trays · ~${combT*2} weeks</div></div>`:''}
+      ${uT===0&&lT===0?'<div style="color:var(--muted);font-size:13px">Complete arch mapping to see your plan.</div>':''}
+    </div>
+    <div class="card"><p style="font-size:13px;color:#8b949e;line-height:1.7">Your AlignerEst™ aligners are custom-made, removable, and virtually invisible. Your doctor will confirm the final treatment plan after a full clinical evaluation.</p></div>
+    <div class="share-grid">
+      <button class="share-btn" onclick="shareReport('Text')"><span class="share-btn-icon">📱</span>Text</button>
+      <button class="share-btn" onclick="shareReport('Email')"><span class="share-btn-icon">📧</span>Email</button>
+      <button class="share-btn" onclick="window.print()"><span class="share-btn-icon">🖨️</span>Print</button>
+    </div>
+    <button class="prim" id="new-case-btn" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border)" onclick="resetCase()">+ Start New Case</button>
+    <div style="height:8px"></div>`;
+  setTimeout(()=>{['upper','lower'].forEach(arch=>{const b=document.getElementById('ba-canvas-'+arch+'-before'),a=document.getElementById('ba-canvas-'+arch+'-after');if(b)drawArchCanvas(arch,b,'before');if(a)drawArchCanvas(arch,a,'after');});},0);
+  return div;
+}
+
+// ── Canvas events ──────────────────────────────────────────────
+function bindCanvasEvents(){
+  ['upper','lower'].forEach(arch=>{
+    const cv=getArchCanvas(arch);if(!cv)return;
+    const nc=cv.cloneNode(true);cv.parentNode.replaceChild(nc,cv);
+    nc.addEventListener('mousedown',e=>handleMouseDown(e,arch),{passive:false});
+    nc.addEventListener('mousemove',e=>handleMouseMove(e,arch),{passive:false});
+    nc.addEventListener('mouseup',e=>handleMouseUp(e,arch),{passive:false});
+    nc.addEventListener('click',e=>handleCanvasClick(e,arch),{passive:false});
+    nc.addEventListener('touchstart',e=>handleTouchStart(e,arch),{passive:false});
+    nc.addEventListener('touchmove',e=>handleTouchMove(e,arch),{passive:false});
+    nc.addEventListener('touchend',e=>handleTouchEnd(e,arch),{passive:false});
+  });
+}
+
+function getCanvasPoint(e,arch){
+  const canvas=getArchCanvas(arch);if(!canvas)return null;
+  const as=state[arch],rect=canvas.getBoundingClientRect();
+  const scaleX=CANVAS_W/rect.width,scaleY=CANVAS_H/rect.height;
+  const clientX=e.touches?e.touches[0].clientX:e.clientX,clientY=e.touches?e.touches[0].clientY:e.clientY;
+  const rawX=(clientX-rect.left)*scaleX,rawY=(clientY-rect.top)*scaleY;
+  return{x:(rawX-CANVAS_W/2-as.panX)/as.zoom+CANVAS_W/2,y:(rawY-CANVAS_H/2-as.panY)/as.zoom+CANVAS_H/2};
+}
+
+let mouseDownPos=null,isDragging=false;
+
+function handleMouseDown(e,arch){
+  const as=state[arch],is=istate[arch],pt=getCanvasPoint(e,arch);if(!pt)return;
+  mouseDownPos={x:e.clientX,y:e.clientY};isDragging=false;
+  if(as.mode==='edit'&&as.selId){
+    const sel=as.placements.find(p=>p.id===as.selId);
+    if(sel){
+      const w=sel.wPx||20,h=sel.hPx||28,hdx=pt.x-(sel.corrected?sel.idealX:sel.x),hdy=pt.y-(sel.corrected?sel.idealY:sel.y),rotRad=(sel.corrected?0:(sel.rot||0))*Math.PI/180;
+      const rotX=hdx*Math.cos(-rotRad)-hdy*Math.sin(-rotRad),rotY=hdx*Math.sin(-rotRad)+hdy*Math.cos(-rotRad);
+      if(Math.hypot(rotX,rotY+h/2+12)<10){is.rotHandle={startAngle:Math.atan2(hdy,hdx),startRot:sel.rot||0,toothId:sel.id};e.preventDefault();return;}
+      if(Math.abs(rotX)<w/2+4&&Math.abs(rotY)<h/2+4){is.drag={toothId:sel.id,startX:pt.x,startY:pt.y,origX:sel.x,origY:sel.y};e.preventDefault();return;}
+    }
+  }
+}
+
+function handleMouseMove(e,arch){
+  const as=state[arch],is=istate[arch],pt=getCanvasPoint(e,arch);if(!pt)return;
+  if(mouseDownPos&&!isDragging){if(Math.hypot(e.clientX-mouseDownPos.x,e.clientY-mouseDownPos.y)>5)isDragging=true;}
+  if(is.rotHandle&&is.rotHandle.toothId){
+    const sel=as.placements.find(p=>p.id===is.rotHandle.toothId);
+    if(sel){const cx=sel.corrected?sel.idealX:sel.x,cy=sel.corrected?sel.idealY:sel.y,angle=Math.atan2(pt.y-cy,pt.x-cx),delta=(angle-is.rotHandle.startAngle)*180/Math.PI;sel.rot=Math.max(-ROT_MAX,Math.min(ROT_MAX,Math.round((is.rotHandle.startRot+delta)*2)/2));const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');updateEditLive(arch,sel);e.preventDefault();}
+    return;
+  }
+  if(is.drag&&is.drag.toothId){
+    const sel=as.placements.find(p=>p.id===is.drag.toothId);
+    if(sel){sel.x=is.drag.origX+(pt.x-is.drag.startX);sel.y=is.drag.origY+(pt.y-is.drag.startY);if(sel.corrected){sel.idealX=sel.x;sel.idealY=sel.y;}const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');e.preventDefault();}
+  }
+}
+
+function handleMouseUp(e,arch){const is=istate[arch],wasDrag=isDragging;is.drag=null;is.rotHandle=null;mouseDownPos=null;if(!wasDrag)return;isDragging=false;render();}
+function handleCanvasClick(e,arch){if(isDragging){isDragging=false;return;}processCanvasTap(e,arch);}
+
+function handleTouchStart(e,arch){
+  const as=state[arch],is=istate[arch];
+  if(e.touches.length===2){is.pinchDist=getPinchDist(e.touches);is.isPanning=false;e.preventDefault();return;}
+  is.lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};mouseDownPos={x:e.touches[0].clientX,y:e.touches[0].clientY};isDragging=false;
+  if(as.mode==='edit'&&as.selId){
+    const pt=getCanvasPoint(e,arch);if(pt){const sel=as.placements.find(p=>p.id===as.selId);if(sel){const w=sel.wPx||20,h=sel.hPx||28,hdx=pt.x-(sel.corrected?sel.idealX:sel.x),hdy=pt.y-(sel.corrected?sel.idealY:sel.y),rotRad=(sel.corrected?0:(sel.rot||0))*Math.PI/180,rotX=hdx*Math.cos(-rotRad)-hdy*Math.sin(-rotRad),rotY=hdx*Math.sin(-rotRad)+hdy*Math.cos(-rotRad);if(Math.hypot(rotX,rotY+h/2+12)<14){is.rotHandle={startAngle:Math.atan2(hdy,hdx),startRot:sel.rot||0,toothId:sel.id};e.preventDefault();return;}if(Math.abs(rotX)<w/2+8&&Math.abs(rotY)<h/2+8){is.drag={toothId:sel.id,startX:pt.x,startY:pt.y,origX:sel.x,origY:sel.y};e.preventDefault();return;}}}
+  }
+  e.preventDefault();
+}
+
+function handleTouchMove(e,arch){
+  const as=state[arch],is=istate[arch];
+  if(e.touches.length===2&&is.pinchDist!=null){const nd=getPinchDist(e.touches);as.zoom=Math.max(1,Math.min(4,as.zoom*nd/is.pinchDist));is.pinchDist=nd;const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');e.preventDefault();return;}
+  if(is.rotHandle&&is.rotHandle.toothId){const pt=getCanvasPoint(e,arch);if(pt){const sel=as.placements.find(p=>p.id===is.rotHandle.toothId);if(sel){const cx=sel.corrected?sel.idealX:sel.x,cy=sel.corrected?sel.idealY:sel.y,a=Math.atan2(pt.y-cy,pt.x-cx),d=(a-is.rotHandle.startAngle)*180/Math.PI;sel.rot=Math.max(-ROT_MAX,Math.min(ROT_MAX,Math.round((is.rotHandle.startRot+d)*2)/2));const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');updateEditLive(arch,sel);}}e.preventDefault();return;}
+  if(is.drag&&is.drag.toothId){const pt=getCanvasPoint(e,arch);if(pt){const sel=as.placements.find(p=>p.id===is.drag.toothId);if(sel){sel.x=is.drag.origX+(pt.x-is.drag.startX);sel.y=is.drag.origY+(pt.y-is.drag.startY);if(sel.corrected){sel.idealX=sel.x;sel.idealY=sel.y;}if(mouseDownPos&&Math.hypot(e.touches[0].clientX-mouseDownPos.x,e.touches[0].clientY-mouseDownPos.y)>5)isDragging=true;const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');}}e.preventDefault();return;}
+  if(as.zoom>1&&is.lastTouch){const dx=e.touches[0].clientX-is.lastTouch.x,dy=e.touches[0].clientY-is.lastTouch.y;as.panX+=dx;as.panY+=dy;is.lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};if(Math.abs(dx)>3||Math.abs(dy)>3)isDragging=true;const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');e.preventDefault();}
+}
+
+function handleTouchEnd(e,arch){
+  const is=istate[arch],hadDrag=isDragging;is.pinchDist=null;
+  if(is.drag||is.rotHandle){is.drag=null;is.rotHandle=null;if(hadDrag)render();isDragging=false;is.isPanning=false;is.lastTouch=null;return;}
+  if(!hadDrag&&is.lastTouch)processCanvasTap({touches:e.changedTouches,clientX:e.changedTouches[0].clientX,clientY:e.changedTouches[0].clientY},arch);
+  if(hadDrag)render();is.isPanning=false;is.lastTouch=null;
+}
+
+function getPinchDist(t){return Math.sqrt(Math.pow(t[0].clientX-t[1].clientX,2)+Math.pow(t[0].clientY-t[1].clientY,2));}
+
+function processCanvasTap(e,arch){
+  const as=state[arch],is=istate[arch],td=arch==='upper'?UPPER_TEETH:LOWER_TEETH,pt=getCanvasPoint(e,arch);if(!pt)return;
+  if(as.mode==='calib'){
+    if(is.calibStep===0){is.calibPt1=pt;is.calibStep=1;const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');}
+    else{as.ppm=Math.hypot(pt.x-is.calibPt1.x,pt.y-is.calibPt1.y)/(arch==='upper'?8.5:5.5);as.placements.forEach(p=>{p.wPx=p.widthMm*as.ppm;p.hPx=p.heightMm*as.ppm;});as.mode='edit';is.calibStep=0;is.calibPt1=null;render();}
+    return;
+  }
+  if(as.mode==='place'){
+    const next=td[as.placeIdx];if(!next)return;const ppm=as.ppm||6;
+    as.placements=as.placements.filter(p=>p.id!==next.id);
+    as.placements.push({id:next.id,label:next.label,name:next.name,widthMm:next.widthMm,heightMm:next.heightMm,x:pt.x,y:pt.y,idealX:pt.x,idealY:pt.y,wPx:next.widthMm*ppm,hPx:next.heightMm*ppm,rot:0,corrected:false,placed:true,polygon:null});
+    if(as.placeIdx<td.length-1)as.placeIdx++;else{as.mode='edit';as.selId=null;}
+    render();return;
+  }
+  if(as.mode==='edit'){
+    const tapped=as.placements.find(p=>{if(!p.placed)return false;const cx=p.corrected?p.idealX:p.x,cy=p.corrected?p.idealY:p.y,rot=(p.corrected?0:(p.rot||0))*Math.PI/180,dx=pt.x-cx,dy=pt.y-cy,rx=dx*Math.cos(-rot)-dy*Math.sin(-rot),ry=dx*Math.sin(-rot)+dy*Math.cos(-rot);return Math.abs(rx)<=(p.wPx||20)/2+4&&Math.abs(ry)<=(p.hPx||28)/2+4;});
+    as.selId=tapped?(as.selId===tapped.id?null:tapped.id):null;render();
+  }
+}
+
+function updateEditLive(arch,sel){const s=document.querySelector('.rot-display');if(s){const rc=rotColor(sel.rot),rot=sel.rot||0;s.style.color=rc||'var(--accent)';s.textContent=(rot>0?'+':'')+rot.toFixed(1)+'°'+(Math.abs(rot)>=ROT_MAX?' 🛑':'');}}
+
+// ── State helpers ─────────────────────────────────────────────
+function setTab(n){state.tab=n;render();}
+function setArchMode(arch,mode){state[arch].mode=mode;state[arch].selId=null;render();}
+function jumpToTooth(arch,idx){state[arch].placeIdx=idx;render();}
+function togglePhotoTools(arch){state[arch].showTools=!state[arch].showTools;render();}
+function resetZoom(arch){state[arch].zoom=1;state[arch].panX=0;state[arch].panY=0;render();}
+function resetPhoto(arch){state[arch].brightness=100;state[arch].contrast=100;state[arch].saturation=100;state[arch].zoom=1;state[arch].panX=0;state[arch].panY=0;render();}
+function startCalib(arch){state[arch].mode='calib';istate[arch].calibStep=0;istate[arch].calibPt1=null;render();}
+function cancelCalib(arch){state[arch].mode='edit';istate[arch].calibStep=0;istate[arch].calibPt1=null;render();}
+function updateProp(arch,prop,val){state[arch][prop]=val;if(['brightness','contrast','saturation'].includes(prop)){const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');document.querySelectorAll('.slider-lbl span:last-child').forEach(el=>{if(el.textContent.endsWith('%'))el.textContent=val+'%';});}else render();}
+function setRot(arch,id,val){const p=state[arch].placements.find(p=>p.id===id);if(p){p.rot=Math.max(-ROT_MAX,Math.min(ROT_MAX,Math.round(val*10)/10));const cv=getArchCanvas(arch);if(cv)drawArchCanvas(arch,cv,'live');const s=document.querySelector('.rot-display');if(s){const rc=rotColor(p.rot);s.style.color=rc||'var(--accent)';s.textContent=(p.rot>0?'+':'')+p.rot.toFixed(1)+'°'+(Math.abs(p.rot)>=ROT_MAX?' 🛑':'');}}}
+function adjPos(arch,id,dx,dy){const p=state[arch].placements.find(p=>p.id===id);if(p){p.x+=dx;p.y+=dy;if(p.corrected){p.idealX=p.x;p.idealY=p.y;}render();}}
+function markCorrected(arch){const as=state[arch],p=as.placements.find(p=>p.id===as.selId);if(p){p.corrected=!p.corrected;if(p.corrected){p.idealX=p.x;p.idealY=p.y;}render();}}
+function correctAll(arch){state[arch].placements.forEach(p=>{if(p.placed&&!p.corrected){p.corrected=true;p.idealX=p.x;p.idealY=p.y;}});state[arch].selId=null;render();}
+function removeTooth(arch,id){const as=state[arch];as.placements=as.placements.filter(p=>p.id!==id);if(as.selId===id)as.selId=null;const td=arch==='upper'?UPPER_TEETH:LOWER_TEETH,idx=td.findIndex(t=>t.id===id);if(idx!==-1){as.placeIdx=idx;as.mode='place';}render();}
+function selectTooth(arch,id){state[arch].selId=state[arch].selId===id?null:id;render();}
+function resetArch(arch){state[arch]=mkArchState();state[arch]._img=null;loadArchImage(arch).then(render);istate[arch]=mkIState();}
+function resetCase(){state={tab:0,patName:'',patDOB:'',photos:{upper:null,lower:null,facial:null},upper:mkArchState(),lower:mkArchState()};istate.upper=mkIState();istate.lower=mkIState();render();}
+function shareReport(method){const uT=archTrays(state.upper.placements,state.upper.ppm),lT=archTrays(state.lower.placements,state.lower.ppm),combT=Math.max(uT,lT),name=state.patName||'Patient';if(method==='Email'){window.location.href=`mailto:?subject=${encodeURIComponent(`AlignerEst™ — ${name}`)}&body=${encodeURIComponent(`Upper: ${uT||'—'} trays\nLower: ${lT||'—'} trays\nCombined: ${combT||'—'} trays (~${combT*2} weeks)\n\nAlignerEst™ by Space Maintainers Laboratories`)}`;}else{window.location.href=`sms:?body=${encodeURIComponent(`AlignerEst™ for ${name}: ${combT} trays (~${combT*2} weeks). Your doctor will confirm.`)}`;}
+}
+function bindInputs(){const n=document.getElementById('inp-name'),d=document.getElementById('inp-dob');if(n)n.addEventListener('input',e=>{state.patName=e.target.value;document.getElementById('pat-badge').textContent=state.patName;});if(d)d.addEventListener('input',e=>{state.patDOB=e.target.value;});}
+if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){r=Math.min(r,w/2,h/2);this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();return this;};}
+render();
+</script>
+</body>
+</html>
