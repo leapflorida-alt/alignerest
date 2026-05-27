@@ -47,7 +47,8 @@ Include ALL teeth even if not visible. Order by tooth id.`;
     if (!r.ok) return res.status(500).json({ error: data.error?.message || 'Claude API error' });
     const text = data.content.map(b => b.text || '').join('');
     const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-    return res.status(200).json(parsed);
+    console.log('PPM from AI:', parsed.ppm);
+return res.status(200).json(parsed);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
